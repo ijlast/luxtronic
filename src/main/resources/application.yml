@@ -1,0 +1,5 @@
+heatpump:
+  ip: 192.168.178.6
+  port: 8888
+  minTemperatureDelta: -5
+  maxTemperatureDelta: 5
