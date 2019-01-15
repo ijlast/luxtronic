@@ -9,5 +9,5 @@ The inital goal of this project is:
 
 ## References
 There are several good references on the web relating to the luxtronic controller including
-# https://github.com/coolchip
-# https://www.loxwiki.eu/pages/viewpage.action?pageId=18219334
+https://github.com/coolchip
+https://www.loxwiki.eu/pages/viewpage.action?pageId=18219334
