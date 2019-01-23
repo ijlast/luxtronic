@@ -46,3 +46,8 @@ buildscript {
 	}
 
 }
+
+bootJar {
+    baseName = 'luxtronic'
+    version =  '0.1.0'
+}
