@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -101,8 +102,8 @@ public class HeatPumpController {
 	 *                   offset.
 	 * @return HTTP status
 	 */
-	@RequestMapping(path = "/heating/{parameter}/{value}", method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
-	public HttpStatus heating(@PathVariable("parameter") String pParameter, @PathVariable("value") String pValue) {
+	@RequestMapping(path = "/heating/{parameter}", method = RequestMethod.PUT, consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	public String heating(@PathVariable("parameter") String pParameter, @RequestBody String pValue) {
 		try {
 			final HeatingParameter parameter = HeatingParameter.valueOf(pParameter);
 			return setParameter(HeatingParameter.Mode, parameter, parameter.getIntegerValue(), pValue);
@@ -120,8 +121,8 @@ public class HeatPumpController {
 	 *                   offset.
 	 * @return HTTP status
 	 */
-	@RequestMapping(path = "/hotwater/{parameter}/{value}", method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
-	public HttpStatus hotwater(@PathVariable("parameter") String pParameter, @PathVariable("value") String pValue) {
+	@RequestMapping(path = "/hotwater/{parameter}", method = RequestMethod.PUT, consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	public String hotwater(@PathVariable("parameter") String pParameter, @RequestBody String pValue) {
 		try {
 			final DomesicHotWaterParameter parameter = DomesicHotWaterParameter.valueOf(pParameter);
 			return setParameter(DomesicHotWaterParameter.Mode, parameter, parameter.getIntegerValue(), pValue);
@@ -135,7 +136,7 @@ public class HeatPumpController {
 	 * parameters. synchronized as there is only one connection to the heatpump in
 	 * this version!
 	 */
-	private HttpStatus setParameter(final Enum<?> pMode, final Enum<?> pParameter, final Integer pEnumValue,
+	private String setParameter(final Enum<?> pMode, final Enum<?> pParameter, final Integer pEnumValue,
 			final String pValue) {
 		HttpStatus status = HttpStatus.OK;
 		Integer value;
@@ -167,7 +168,7 @@ public class HeatPumpController {
 			mLog.error("Exception Writing Parameter", e);
 			throw new RuntimeException(e);
 		}
-		return status;
+		return status.toString();
 	}
 
 	/**
@@ -221,7 +222,7 @@ public class HeatPumpController {
 			int index = i / HeatPumpSocketWrapper.BYTES_PER_INT;
 			String name = Integer.toString(index);
 			FormatConverter conv = mApplicationContext.getBean(OneToOneConverter.class);
-			
+
 			if (pUseCalculations) {
 				final Calculations calc = Calculations.getCalculation(index);
 				if (calc != null) {
@@ -229,7 +230,7 @@ public class HeatPumpController {
 					name = calc.name();
 				}
 			}
-			
+
 			dataMap.put(name, conv.convertToHumanReadable(pBuffer.getInt()));
 
 		}
