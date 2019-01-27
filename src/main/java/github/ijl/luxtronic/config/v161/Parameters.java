@@ -2,10 +2,14 @@ package github.ijl.luxtronic.config.v161;
 
 import github.ijl.luxtronic.format.FormatConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
+import github.ijl.luxtronic.format.OperatingModeConverter;
+import github.ijl.luxtronic.format.TemperatureConverter;
 
 public enum Parameters {
 	// TODO
-	DEFAULT(-1, "Unknown", OneToOneConverter.class);
+	DEFAULT(-1, "Unknown", OneToOneConverter.class), ID_Einst_WK_akt(1, "Unknown", TemperatureConverter.class),
+	ID_Einst_BWS_akt(2, "Unknown", TemperatureConverter.class),
+	ID_Ba_Hz_akt(3, "Unknown", OperatingModeConverter.class), ID_Ba_Bw_akt(4, "Unknown", OperatingModeConverter.class);
 
 	private final Integer mIndex;
 	private final String mDescription;
@@ -30,7 +34,7 @@ public enum Parameters {
 		return mFormatConverterClass;
 	}
 
-	public static Parameters getCalculation(final int pIndex) {
+	public static Parameters getParameter(final int pIndex) {
 		Parameters calc = null;
 		for (final Parameters testCalc : Parameters.class.getEnumConstants()) {
 			if (pIndex == testCalc.getIntegerValue()) {

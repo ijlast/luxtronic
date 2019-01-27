@@ -12,8 +12,8 @@ import java.nio.ByteOrder;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ import github.ijl.luxtronic.config.ServiceProperties;
 @Service
 public final class HeatPumpSocketWrapper {
 	public static final int BYTES_PER_INT = 4;
-	private Log mLog = LogFactory.getLog(HeatPumpSocketWrapper.class);
+	private Logger mLog = LoggerFactory.getLogger(HeatPumpSocketWrapper.class);
 
 	@Autowired
 	private ServiceProperties mProperties;
@@ -120,6 +120,7 @@ public final class HeatPumpSocketWrapper {
 	 * @throws IOException
 	 */
 	public ByteBuffer read(final int pCount) throws IOException {
+		mLog.debug("read: reading " + pCount + "bytes of data ");
 		connect();
 		final ByteBuffer readBuffer = createBigEndianByteBuffer(BYTES_PER_INT * pCount);
 		// Read the result
@@ -143,10 +144,13 @@ public final class HeatPumpSocketWrapper {
 		final ByteBuffer writeBuffer = createBigEndianByteBuffer(BYTES_PER_INT * (1 + pData.length));
 
 		// Write the command
+		mLog.debug("write: sending values to heatpump: ");
 		writeBuffer.putInt(pCommand);
+		mLog.debug("write: " + pCommand);
 		// Write the data, if any.
 		for (int i = 0; i < pData.length; i++) {
 			writeBuffer.putInt(pData[i]);
+			mLog.debug("write: " + pData[i]);
 		}
 
 		// Send the data.

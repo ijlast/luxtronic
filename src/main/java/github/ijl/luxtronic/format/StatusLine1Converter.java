@@ -11,21 +11,21 @@ public class StatusLine1Converter implements FormatConverter {
 	public String convertToHumanReadable(final Integer pValue) {
 		switch (pValue) {
 		case 0:
-			return "0: Heat pump is running";
+			return "HP is running";
 		case 1:
-			return "1: Heat pump is";
+			return "HP is off";
 		case 2:
-			return "2: Heat pump is coming";
+			return "HP is coming";
 		case 3:
-			return "3: Error code memory space 0";
+			return "Error: mem space 0";
 		case 4:
-			return "4: Defrost";
+			return "Defrost";
 		case 5:
-			return "5: Waiting for LIN connection";
+			return "Waiting for LIN";
 		case 6:
-			return "6: Compressor heats up";
+			return "Comp. heats up";
 		case 7:
-			return "7: Pump flow";
+			return "Pump flow";
 
 
 		default:

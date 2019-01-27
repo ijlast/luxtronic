@@ -12,4 +12,15 @@ public enum OperatingMode {
 	public Integer getIntegerValue() {
 		return mValue;
 	}
+	
+	public static OperatingMode getOperatingMode(final int pIndex) {
+		OperatingMode opmode = null;
+		for (final OperatingMode testCalc : OperatingMode.class.getEnumConstants()) {
+			if (pIndex == testCalc.getIntegerValue()) {
+				opmode = testCalc;
+				break;
+			}
+		}
+		return opmode;
+	}
 }

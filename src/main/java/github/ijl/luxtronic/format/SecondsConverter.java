@@ -9,7 +9,7 @@ public class SecondsConverter implements FormatConverter {
 	 */
 	@Override
 	public String convertToHumanReadable(final Integer pValue) {
-		return Integer.toString(pValue);
+		return Integer.toString(pValue) + " s";
 	}
 
 }

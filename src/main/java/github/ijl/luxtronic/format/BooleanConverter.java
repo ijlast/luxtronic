@@ -1,12 +1,12 @@
 package github.ijl.luxtronic.format;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BooleanConverter implements FormatConverter {
-	private Log mLog = LogFactory.getLog(BooleanConverter.class);
+	private Logger mLog = LoggerFactory.getLogger(BooleanConverter.class);
 
 	/**
 	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)

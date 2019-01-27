@@ -3,3 +3,7 @@ heatpump:
   port: 8888
   minTemperatureDelta: -5
   maxTemperatureDelta: 5
+
+logging:
+  level:
+    github: DEBUG

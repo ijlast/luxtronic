@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import github.ijl.luxtronic.config.ServiceProperties;
 import github.ijl.luxtronic.config.v161.Calculations;
+import github.ijl.luxtronic.config.v161.Parameters;
 import github.ijl.luxtronic.exception.InvalidOperatingModeException;
 import github.ijl.luxtronic.exception.InvalidParameterException;
 import github.ijl.luxtronic.exception.TemperatureDeltaRangeException;
@@ -32,7 +33,7 @@ import github.ijl.luxtronic.param.OperatingMode;
 @RestController
 @RequestMapping("luxtronic")
 public class HeatPumpController {
-	private Log mLog = LogFactory.getLog(HeatPumpController.class);
+	private Logger mLog = LoggerFactory.getLogger(HeatPumpController.class);
 
 	@Autowired
 	private ApplicationContext mApplicationContext;
@@ -50,6 +51,7 @@ public class HeatPumpController {
 	 */
 	@RequestMapping(path = "/parameters", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody Map<String, String> parameters() {
+		mLog.debug("/parameters called!");
 		final Map<String, String> result = getParameters(3003, false, 0);
 		return result;
 	}
@@ -63,6 +65,7 @@ public class HeatPumpController {
 	 */
 	@RequestMapping(path = "/parameter/{parameter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody String parameter(final @PathVariable("parameter") String pParameter) {
+		mLog.debug("/parameter/" + pParameter + " called!");
 		final Map<String, String> result = getParameters(3003, false, 0);
 		return result.get(pParameter);
 	}
@@ -76,6 +79,7 @@ public class HeatPumpController {
 	 */
 	@RequestMapping(path = "/calculations", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody Map<String, String> calculations() {
+		mLog.debug("/calcuations called!");
 		final Map<String, String> result = getParameters(3004, true, 10);
 		return result;
 	}
@@ -89,6 +93,7 @@ public class HeatPumpController {
 	 */
 	@RequestMapping(path = "/calculation/{parameter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody String calculation(final @PathVariable("parameter") String pParameter) {
+		mLog.debug("/calculation/" + pParameter + " called!");
 		final Map<String, String> result = getParameters(3004, true, 10);
 		return result.get(pParameter);
 	}
@@ -102,8 +107,9 @@ public class HeatPumpController {
 	 *                   offset.
 	 * @return HTTP status
 	 */
-	@RequestMapping(path = "/heating/{parameter}", method = RequestMethod.PUT, consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(path = "/heating/{parameter}", method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
 	public String heating(@PathVariable("parameter") String pParameter, @RequestBody String pValue) {
+		mLog.debug("/heating/" + pParameter + " called with value: " + pValue);
 		try {
 			final HeatingParameter parameter = HeatingParameter.valueOf(pParameter);
 			return setParameter(HeatingParameter.Mode, parameter, parameter.getIntegerValue(), pValue);
@@ -121,8 +127,9 @@ public class HeatPumpController {
 	 *                   offset.
 	 * @return HTTP status
 	 */
-	@RequestMapping(path = "/hotwater/{parameter}", method = RequestMethod.PUT, consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(path = "/hotwater/{parameter}", method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
 	public String hotwater(@PathVariable("parameter") String pParameter, @RequestBody String pValue) {
+		mLog.debug("/hotwater/" + pParameter + " called with value: " + pValue);
 		try {
 			final DomesicHotWaterParameter parameter = DomesicHotWaterParameter.valueOf(pParameter);
 			return setParameter(DomesicHotWaterParameter.Mode, parameter, parameter.getIntegerValue(), pValue);
@@ -144,15 +151,19 @@ public class HeatPumpController {
 		// There are only two options for parameter
 		// 1) Set the operating mode
 		if (pMode.equals(pParameter)) {
+			mLog.debug("setParameter: looking for operating mode: " + pValue);
 			try {
 				final OperatingMode mode = OperatingMode.valueOf(pValue);
 				value = mode.getIntegerValue();
+				mLog.debug("setParameter: valid operating mode: " + pValue);
 			} catch (IllegalArgumentException iae) {
+				mLog.error("setParameter: invalid operating mode: " + pValue);
 				throw new InvalidOperatingModeException(pValue, OperatingMode.class);
 			}
 		}
 		// 2) Set the temperature delta
 		else {
+			mLog.debug("setParameter: calcuating temperature delta for: " + pValue);
 			value = calcTemperatureDelta(pValue);
 		}
 
@@ -165,7 +176,7 @@ public class HeatPumpController {
 				mHeatPumpSocketWrapper.read(2);
 			}
 		} catch (Exception e) {
-			mLog.error("Exception Writing Parameter", e);
+			mLog.error("setParameter: Exception Writing Parameter", e);
 			throw new RuntimeException(e);
 		}
 		return status.toString();
@@ -221,16 +232,24 @@ public class HeatPumpController {
 		for (int i = pBuffer.position(); i < pBuffer.limit(); i += HeatPumpSocketWrapper.BYTES_PER_INT) {
 			int index = i / HeatPumpSocketWrapper.BYTES_PER_INT;
 			String name = Integer.toString(index);
-			FormatConverter conv = mApplicationContext.getBean(OneToOneConverter.class);
+			Class<? extends FormatConverter> convClass = OneToOneConverter.class;
 
+			// Switch between parameters and calculations
 			if (pUseCalculations) {
 				final Calculations calc = Calculations.getCalculation(index);
 				if (calc != null) {
-					conv = mApplicationContext.getBean(calc.getFormatConverterClass());
+					convClass = calc.getFormatConverterClass();
 					name = calc.name();
 				}
+			} else {
+				final Parameters param= Parameters.getParameter(index);
+				if (param != null) {
+					convClass = param.getFormatConverterClass();
+					name = param.name();
+				}				
 			}
 
+			final FormatConverter conv = mApplicationContext.getBean(convClass);
 			dataMap.put(name, conv.convertToHumanReadable(pBuffer.getInt()));
 
 		}
