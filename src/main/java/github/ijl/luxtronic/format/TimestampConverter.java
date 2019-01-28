@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TimestampConverter implements FormatConverter {
-	private static final DateFormat FORMATTER = new SimpleDateFormat("dd:MM:yy HH:mm:ss");
+	private final DateFormat mFormatter = new SimpleDateFormat("dd:MM:yy HH:mm:ss");
 
 	/**
 	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
@@ -19,6 +19,6 @@ public class TimestampConverter implements FormatConverter {
 		long lvalue = (long) pValue;
 		ts.setTime(lvalue * 1000L); // pValue is in seconds
 
-		return FORMATTER.format(ts);
+		return mFormatter.format(ts);
 	}
 }
