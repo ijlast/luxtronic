@@ -1,10 +1,12 @@
-package github.ijl.luxtronic.format;
+package github.ijl.luxtronic.format.output;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.stereotype.Service;
+
+import github.ijl.luxtronic.format.FormatConverter;
 
 @Service
 public class TimestampConverter implements FormatConverter {

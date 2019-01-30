@@ -12,4 +12,11 @@ public class OneToOneConverter implements FormatConverter {
 		return Integer.toString(pValue);
 	}
 
+	/**
+	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHeatPumpFormat(java.lang.String)
+	 */
+	@Override
+	public Integer convertToHeatPumpFormat(final String pValue) {
+		return Integer.valueOf(pValue);
+	}
 }

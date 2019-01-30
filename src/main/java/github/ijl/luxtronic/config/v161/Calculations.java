@@ -1,20 +1,20 @@
 package github.ijl.luxtronic.config.v161;
 
-import github.ijl.luxtronic.format.AsciiConverter;
-import github.ijl.luxtronic.format.BooleanConverter;
 import github.ijl.luxtronic.format.FormatConverter;
-import github.ijl.luxtronic.format.HeatPumpTypeConverter;
-import github.ijl.luxtronic.format.IPConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
-import github.ijl.luxtronic.format.OperatingConditionConverter;
-import github.ijl.luxtronic.format.SecondsConverter;
-import github.ijl.luxtronic.format.SecondsToHoursConverter;
-import github.ijl.luxtronic.format.ShutdownCodeConverter;
-import github.ijl.luxtronic.format.StatusLine1Converter;
-import github.ijl.luxtronic.format.StatusLine2Converter;
-import github.ijl.luxtronic.format.StatusLine3Converter;
-import github.ijl.luxtronic.format.TemperatureConverter;
-import github.ijl.luxtronic.format.TimestampConverter;
+import github.ijl.luxtronic.format.output.AsciiConverter;
+import github.ijl.luxtronic.format.output.BooleanConverter;
+import github.ijl.luxtronic.format.output.HeatPumpTypeConverter;
+import github.ijl.luxtronic.format.output.IPConverter;
+import github.ijl.luxtronic.format.output.OperatingConditionConverter;
+import github.ijl.luxtronic.format.output.SecondsConverter;
+import github.ijl.luxtronic.format.output.SecondsToHoursConverter;
+import github.ijl.luxtronic.format.output.ShutdownCodeConverter;
+import github.ijl.luxtronic.format.output.StatusLine1Converter;
+import github.ijl.luxtronic.format.output.StatusLine2Converter;
+import github.ijl.luxtronic.format.output.StatusLine3Converter;
+import github.ijl.luxtronic.format.output.TemperatureConverter;
+import github.ijl.luxtronic.format.output.TimestampConverter;
 
 public enum Calculations {
 	ID_WEB_Temperatur_TVL(10, "Flow temperature heating circuit.", TemperatureConverter.class),

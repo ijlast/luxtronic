@@ -1,9 +1,11 @@
-package github.ijl.luxtronic.format;
+package github.ijl.luxtronic.format.output;
 
 import org.springframework.stereotype.Service;
 
+import github.ijl.luxtronic.format.FormatConverter;
+
 @Service
-public class StatusLine1Converter implements FormatConverter {
+public class OperatingConditionConverter implements FormatConverter {
 	/**
 	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
 	 */
@@ -11,26 +13,24 @@ public class StatusLine1Converter implements FormatConverter {
 	public String convertToHumanReadable(final Integer pValue) {
 		switch (pValue) {
 		case 0:
-			return "HP is running";
+			return "0: heating";
 		case 1:
-			return "HP is off";
+			return "1: hot water";
 		case 2:
-			return "HP is coming";
+			return "2: swimming pool / photovoltaic";
 		case 3:
-			return "Error: mem space 0";
+			return "3: power supply";
 		case 4:
-			return "Defrost";
+			return "4: defrosting";
 		case 5:
-			return "Waiting for LIN";
+			return "5: no request";
 		case 6:
-			return "Comp. heats up";
+			return "6: heating ext. Energy source";
 		case 7:
-			return "Pump flow";
-
+			return "7: cooling mode";
 
 		default:
 			return Integer.toString(pValue) + ": Unknown";
 		}
 	}
-
 }

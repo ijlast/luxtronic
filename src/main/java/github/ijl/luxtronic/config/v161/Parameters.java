@@ -3,7 +3,7 @@ package github.ijl.luxtronic.config.v161;
 import github.ijl.luxtronic.format.FormatConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
 import github.ijl.luxtronic.format.OperatingModeConverter;
-import github.ijl.luxtronic.format.TemperatureConverter;
+import github.ijl.luxtronic.format.output.TemperatureConverter;
 
 public enum Parameters {
 	// TODO

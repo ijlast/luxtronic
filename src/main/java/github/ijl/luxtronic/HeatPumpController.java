@@ -18,17 +18,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import github.ijl.luxtronic.config.ServiceProperties;
 import github.ijl.luxtronic.config.v161.Calculations;
 import github.ijl.luxtronic.config.v161.Parameters;
-import github.ijl.luxtronic.exception.InvalidOperatingModeException;
 import github.ijl.luxtronic.exception.InvalidParameterException;
-import github.ijl.luxtronic.exception.TemperatureDeltaRangeException;
 import github.ijl.luxtronic.format.FormatConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
 import github.ijl.luxtronic.param.DomesicHotWaterParameter;
 import github.ijl.luxtronic.param.HeatingParameter;
-import github.ijl.luxtronic.param.OperatingMode;
 
 @RestController
 @RequestMapping("luxtronic")
@@ -39,8 +35,6 @@ public class HeatPumpController {
 	private ApplicationContext mApplicationContext;
 	@Autowired
 	private HeatPumpSocketWrapper mHeatPumpSocketWrapper;
-	@Autowired
-	private ServiceProperties mProperties;
 
 	/**
 	 * To read parameters send 3003 0000 (0x00 0x00 0x0b 0xbb 0x00 0x00 0x00 0x00)
@@ -112,7 +106,8 @@ public class HeatPumpController {
 		mLog.debug("/heating/" + pParameter + " called with value: " + pValue);
 		try {
 			final HeatingParameter parameter = HeatingParameter.valueOf(pParameter);
-			return setParameter(HeatingParameter.Mode, parameter, parameter.getIntegerValue(), pValue);
+			final Class<? extends FormatConverter> convClass = parameter.getFormatConverterClass();
+			return setParameter(parameter, parameter.getIntegerValue(), convClass, pValue);
 		} catch (IllegalArgumentException iae) {
 			throw new InvalidParameterException(pParameter, HeatingParameter.class);
 		}
@@ -132,7 +127,8 @@ public class HeatPumpController {
 		mLog.debug("/hotwater/" + pParameter + " called with value: " + pValue);
 		try {
 			final DomesicHotWaterParameter parameter = DomesicHotWaterParameter.valueOf(pParameter);
-			return setParameter(DomesicHotWaterParameter.Mode, parameter, parameter.getIntegerValue(), pValue);
+			final Class<? extends FormatConverter> convClass = parameter.getFormatConverterClass();
+			return setParameter(parameter, parameter.getIntegerValue(), convClass, pValue);
 		} catch (IllegalArgumentException iae) {
 			throw new InvalidParameterException(pParameter, DomesicHotWaterParameter.class);
 		}
@@ -143,34 +139,20 @@ public class HeatPumpController {
 	 * parameters. synchronized as there is only one connection to the heatpump in
 	 * this version!
 	 */
-	private String setParameter(final Enum<?> pMode, final Enum<?> pParameter, final Integer pEnumValue,
-			final String pValue) {
+	private String setParameter(final Enum<?> pParameter, final Integer pEnumValue,
+			final Class<? extends FormatConverter> pConverter, final String pValue) {
 		HttpStatus status = HttpStatus.OK;
-		Integer value;
 
-		// There are only two options for parameter
-		// 1) Set the operating mode
-		if (pMode.equals(pParameter)) {
-			mLog.debug("setParameter: looking for operating mode: " + pValue);
-			try {
-				final OperatingMode mode = OperatingMode.valueOf(pValue);
-				value = mode.getIntegerValue();
-				mLog.debug("setParameter: valid operating mode: " + pValue);
-			} catch (IllegalArgumentException iae) {
-				mLog.error("setParameter: invalid operating mode: " + pValue);
-				throw new InvalidOperatingModeException(pValue, OperatingMode.class);
-			}
-		}
-		// 2) Set the temperature delta
-		else {
-			mLog.debug("setParameter: calcuating temperature delta for: " + pValue);
-			value = calcTemperatureDelta(pValue);
-		}
-
-		// Send the command to the heat pump controller.
 		mLog.debug("Parameter: " + pParameter.name());
-		mLog.debug("value: " + value);
+		mLog.debug("Converter class: " + pConverter);
+		mLog.debug("value: " + pValue);
+
 		try {
+			final FormatConverter converter = mApplicationContext.getBean(pConverter);
+			// shouldn't be null
+			final Integer value = converter.convertToHeatPumpFormat(pValue);
+			mLog.debug("Converted value: " + value);
+
 			synchronized (mHeatPumpSocketWrapper) {
 				mHeatPumpSocketWrapper.write(3002, pEnumValue, value);
 				mHeatPumpSocketWrapper.read(2);
@@ -207,26 +189,6 @@ public class HeatPumpController {
 		return result;
 	}
 
-	/**
-	 * Converts the input value to Integer value for the call to the heatpump.
-	 * 
-	 * @param pValue
-	 * @return
-	 * @throws TemperatureDeltaRangeException
-	 */
-	private Integer calcTemperatureDelta(final String pValue) throws TemperatureDeltaRangeException {
-		float tempValue;
-		try {
-			tempValue = Float.valueOf(pValue);
-		} catch (NumberFormatException e) {
-			throw new TemperatureDeltaRangeException(pValue, mProperties);
-		}
-		if (tempValue < mProperties.getMinTemperatureDelta() || tempValue > mProperties.getMaxTemperatureDelta()) {
-			throw new TemperatureDeltaRangeException(pValue, mProperties);
-		}
-		return (int) (10 * tempValue);
-	}
-
 	private Map<String, String> byteBufferToMap(final ByteBuffer pBuffer, boolean pUseCalculations) {
 		final Map<String, String> dataMap = new LinkedHashMap<String, String>();
 		for (int i = pBuffer.position(); i < pBuffer.limit(); i += HeatPumpSocketWrapper.BYTES_PER_INT) {
@@ -242,11 +204,11 @@ public class HeatPumpController {
 					name = calc.name();
 				}
 			} else {
-				final Parameters param= Parameters.getParameter(index);
+				final Parameters param = Parameters.getParameter(index);
 				if (param != null) {
 					convClass = param.getFormatConverterClass();
 					name = param.name();
-				}				
+				}
 			}
 
 			final FormatConverter conv = mApplicationContext.getBean(convClass);
