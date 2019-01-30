@@ -1,6 +1,8 @@
-package github.ijl.luxtronic.format;
+package github.ijl.luxtronic.format.output;
 
 import org.springframework.stereotype.Service;
+
+import github.ijl.luxtronic.format.FormatConverter;
 
 @Service
 public class IPConverter implements FormatConverter {

@@ -8,8 +8,12 @@ import org.springframework.stereotype.Component;
 public class ServiceProperties {
 	private String mIp;
 	private String mPort;
+
 	private Float mMinTemperatureDelta;
 	private Float mMaxTemperatureDelta;
+
+	private Float mMinDHWTargetTemperature;
+	private Float mMaxDHWTargetTemperature;
 
 	public String getIp() {
 		return mIp;
@@ -43,7 +47,20 @@ public class ServiceProperties {
 		mMaxTemperatureDelta = pMaxTemperatureDelta;
 	}
 
-	
-	
-	
+	public Float getMinDHWTargetTemperature() {
+		return mMinDHWTargetTemperature;
+	}
+
+	public void setMinDHWTargetTemperature(final Float pMinDHWTargetTemperature) {
+		mMinDHWTargetTemperature = pMinDHWTargetTemperature;
+	}
+
+	public Float getMaxDHWTargetTemperature() {
+		return mMaxDHWTargetTemperature;
+	}
+
+	public void setMaxDHWTargetTemperature(final Float pMaxDHWTargetTemperature) {
+		mMaxDHWTargetTemperature = pMaxDHWTargetTemperature;
+	}
+
 }
