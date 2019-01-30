@@ -1,0 +1,12 @@
+heatpump:
+  ip: 192.168.178.6
+  port: 8888
+  minDHWTargetTemperature: 30
+  maxDHWTargetTemperature: 50
+  minTemperatureDelta: -5
+  maxTemperatureDelta: 5
+  
+
+logging:
+  level:
+    github: DEBUG
