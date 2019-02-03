@@ -5,13 +5,13 @@ FROM openjdk:8-jre-alpine
 #RUN apt-get update
 #RUN apt-get install -y libtcnative-1
 
-ADD build/libs/luxtronic-0.2.0.jar /opt/luxtronic-0.2.0.jar
+ADD luxtronic-*.jar /opt/luxtronic.jar
 
 ENV HEATPUMP_IP 192.168.178.6
 ENV HEATPUMP_PORT 8888
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/opt/luxtronic-0.2.0.jar"]
+ENTRYPOINT ["java", "-jar", "/opt/luxtronic.jar"]
 
 # 
 # Example usage:
