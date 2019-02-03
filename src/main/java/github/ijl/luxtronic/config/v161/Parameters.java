@@ -7,9 +7,9 @@ import github.ijl.luxtronic.format.output.TemperatureConverter;
 
 public enum Parameters {
 	// TODO
-	DEFAULT(-1, "Unknown", OneToOneConverter.class), ID_Einst_WK_akt(1, "Unknown", TemperatureConverter.class),
-	ID_Einst_BWS_akt(2, "Unknown", TemperatureConverter.class),
-	ID_Ba_Hz_akt(3, "Unknown", OperatingModeConverter.class), ID_Ba_Bw_akt(4, "Unknown", OperatingModeConverter.class);
+	DEFAULT(-1, "Unknown", OneToOneConverter.class), ID_Einst_WK_akt(1, "Heating Target Temperature Delta", TemperatureConverter.class),
+	ID_Einst_BWS_akt(2, "DHW Target Temperature", TemperatureConverter.class),
+	ID_Ba_Hz_akt(3, "Heating Mode", OperatingModeConverter.class), ID_Ba_Bw_akt(4, "DHW Mode", OperatingModeConverter.class);
 
 	private final Integer mIndex;
 	private final String mDescription;
