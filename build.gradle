@@ -9,8 +9,8 @@
 // See https://docs.spring.io/spring-boot/docs/2.1.2.RELEASE/gradle-plugin/reference/html/
 
 plugins {
-	id 'org.springframework.boot' version '2.1.2.RELEASE'
-    id 'com.palantir.docker' version '0.21.0'
+	id 'org.springframework.boot' version '2.1.5.RELEASE'
+    id 'com.palantir.docker' version '0.22.1'
 }
 
 apply plugin: 'java'
@@ -33,7 +33,7 @@ dependencies {
 
 bootJar {
     baseName = 'luxtronic'
-    version =  '0.2.0'
+    version =  '0.2.1'
 }
 
 docker {

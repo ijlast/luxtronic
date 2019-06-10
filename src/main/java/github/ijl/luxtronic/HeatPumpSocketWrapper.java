@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -32,6 +33,7 @@ public final class HeatPumpSocketWrapper {
 	@Autowired
 	private ServiceProperties mProperties;
 	private Socket mSocket;
+	private volatile int mFailCount = 0;
 
 	public HeatPumpSocketWrapper() {
 	}
@@ -139,26 +141,37 @@ public final class HeatPumpSocketWrapper {
 	 * @throws IOException
 	 */
 	public ByteBuffer write(final int pCommand, final int... pData) throws IOException {
-		connect();
-		// Create the buffer with at least 4 bytes.
-		final ByteBuffer writeBuffer = createBigEndianByteBuffer(BYTES_PER_INT * (1 + pData.length));
+		try {
+			connect();
+			// Create the buffer with at least 4 bytes.
+			final ByteBuffer writeBuffer = createBigEndianByteBuffer(BYTES_PER_INT * (1 + pData.length));
 
-		// Write the command
-		mLog.debug("write: sending values to heatpump: ");
-		writeBuffer.putInt(pCommand);
-		mLog.debug("write: " + pCommand);
-		// Write the data, if any.
-		for (int i = 0; i < pData.length; i++) {
-			writeBuffer.putInt(pData[i]);
-			mLog.debug("write: " + pData[i]);
+			// Write the command
+			mLog.debug("write: sending values to heatpump: ");
+			writeBuffer.putInt(pCommand);
+			mLog.debug("write: " + pCommand);
+			// Write the data, if any.
+			for (int i = 0; i < pData.length; i++) {
+				writeBuffer.putInt(pData[i]);
+				mLog.debug("write: " + pData[i]);
+			}
+
+			// Send the data.
+			writeBuffer.flip();
+			final OutputStream os = mSocket.getOutputStream();
+			os.write(writeBuffer.array());
+			os.flush();
+			mFailCount = 0;
+			return writeBuffer;
+		} catch (final SocketException e) {
+			if (mFailCount++ < 3) {
+				close();
+				return write(pCommand, pData);
+			} else {
+				System.exit(1); // should trigger restart or docker container
+				return null;
+			}
 		}
-
-		// Send the data.
-		writeBuffer.flip();
-		final OutputStream os = mSocket.getOutputStream();
-		os.write(writeBuffer.array());
-		os.flush();
-		return writeBuffer;
 	}
 
 	public void dump(final ByteBuffer pBuffer) {
