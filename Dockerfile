@@ -1,17 +1,18 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:11
 
 # ALternative, however libtcnative-1 is not currently available for this version of springBoot (also, this is not intended to be a high volume server). 
 #FROM openjdk:8-jre-stretch
 #RUN apt-get update
 #RUN apt-get install -y libtcnative-1
 
-ADD luxtronic-*.jar /opt/luxtronic.jar
+COPY  luxtronic-*.jar /opt/luxtronic.jar
+WORKDIR /opt
 
 ENV HEATPUMP_IP 192.168.178.6
 ENV HEATPUMP_PORT 8888
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/opt/luxtronic.jar"]
+ENTRYPOINT ["java", "-jar", "luxtronic.jar"]
 
 # 
 # Example usage:

@@ -9,14 +9,27 @@
 // See https://docs.spring.io/spring-boot/docs/2.1.2.RELEASE/gradle-plugin/reference/html/
 
 plugins {
-	id 'org.springframework.boot' version '2.1.5.RELEASE'
+	id 'org.springframework.boot' version '2.2.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'com.palantir.docker' version '0.22.1'
+    id 'java'
+    id 'eclipse'
+    
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'io.spring.dependency-management'
 
+compileJava {
+	options.fork = true
+	options.deprecation = true
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
+}
+
+configurations {
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
+}
 
 repositories {
     mavenCentral()
@@ -24,16 +37,19 @@ repositories {
 
 
 dependencies {
- 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'   
+  implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  compileOnly 'org.projectlombok:lombok'
+  annotationProcessor 'org.projectlombok:lombok'
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
 }
 
 
 bootJar {
-    baseName = 'luxtronic'
-    version =  '0.2.1'
+    archiveBaseName = 'luxtronic'
+    archiveVersion =  '1.0.0-SNAPSHOT'
 }
 
 docker {

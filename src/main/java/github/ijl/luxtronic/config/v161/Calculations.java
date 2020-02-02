@@ -15,7 +15,11 @@ import github.ijl.luxtronic.format.output.StatusLine2Converter;
 import github.ijl.luxtronic.format.output.StatusLine3Converter;
 import github.ijl.luxtronic.format.output.TemperatureConverter;
 import github.ijl.luxtronic.format.output.TimestampConverter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@AllArgsConstructor
+@Getter
 public enum Calculations {
 	ID_WEB_Temperatur_TVL(10, "Flow temperature heating circuit.", TemperatureConverter.class),
 	ID_WEB_Temperatur_TRL(11, "Return temperature heating circuit.", TemperatureConverter.class),
@@ -191,28 +195,9 @@ public enum Calculations {
 	ID_WEB_LIN_ND(181, "low pressure", OneToOneConverter.class),
 	ID_WEB_LIN_VDH_out(182, "Output compressor heater", BooleanConverter.class);
 
-	private final Integer mIndex;
-	private final String mDescription;
-	private final Class<? extends FormatConverter> mFormatConverterClass;
-
-	private Calculations(final Integer pIndex, final String pDescription,
-			final Class<? extends FormatConverter> pConverterClass) {
-		mIndex = pIndex;
-		mDescription = pDescription;
-		mFormatConverterClass = pConverterClass;
-	}
-
-	public Integer getIntegerValue() {
-		return mIndex;
-	}
-
-	public String getDescription() {
-		return mDescription;
-	}
-
-	public Class<? extends FormatConverter> getFormatConverterClass() {
-		return mFormatConverterClass;
-	}
+	private final Integer integerValue;
+	private final String description;
+	private final Class<? extends FormatConverter> formatConverterClass;
 
 	public static Calculations getCalculation(final int pIndex) {
 		Calculations calc = null;
