@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM adoptopenjdk/openjdk11:latest
 
 ARG JAR_FILE=build/libs/luxtronic-*.jar
 
