@@ -2,24 +2,11 @@ package github.ijl.luxtronic.format.output;
 
 import org.springframework.stereotype.Service;
 
-import github.ijl.luxtronic.format.FormatConverter;
-
 @Service
-public class StatusLine2Converter implements FormatConverter {
-	/**
-	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
-	 */
-	@Override
-	public String convertToHumanReadable(final Integer pValue) {
-		switch (pValue) {
-		case 0:
-			return "since";
-		case 1:
-			return "in";
+public class StatusLine2Converter extends AbstractMapBasedConverter {
+	private static final Object[][] HUMAN_READABLE_VALUES = new Object[][] { { 0, "since" }, { 1, "in" }, };
 
-		default:
-			return Integer.toString(pValue) + ": Unknown";
-		}
+	public StatusLine2Converter() {
+		super(HUMAN_READABLE_VALUES);
 	}
-
 }

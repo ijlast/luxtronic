@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import github.ijl.luxtronic.config.ServiceProperties;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This is a wrapper around a socket to the heat pump. Ideally it should be
@@ -26,9 +27,9 @@ import github.ijl.luxtronic.config.ServiceProperties;
  *
  */
 @Service
+@Slf4j
 public final class HeatPumpSocketWrapper {
 	public static final int BYTES_PER_INT = 4;
-	private Logger mLog = LoggerFactory.getLogger(HeatPumpSocketWrapper.class);
 
 	@Autowired
 	private ServiceProperties mProperties;
@@ -49,9 +50,9 @@ public final class HeatPumpSocketWrapper {
 	protected void connect() throws UnknownHostException, IOException {
 		if (mSocket == null || !mSocket.isConnected()) {
 			final InetAddress address = InetAddress.getByName(mProperties.getIp());
-			mLog.info("Opening heat pump connection...");
-			mLog.info("Using IP Address: " + mProperties.getIp());
-			mLog.info("Using Port: " + mProperties.getPort());
+			log.info("Opening heat pump connection...");
+			log.info("Using IP Address: " + mProperties.getIp());
+			log.info("Using Port: " + mProperties.getPort());
 			mSocket = new Socket(address.getHostAddress(), Integer.valueOf(mProperties.getPort()));
 			mSocket.setKeepAlive(true);
 		}
@@ -65,7 +66,7 @@ public final class HeatPumpSocketWrapper {
 	 */
 	@PreDestroy
 	public void close() throws IOException {
-		mLog.info("Closing heat pump connection!");
+		System.out.println("Closing heat pump connection!");
 		if (mSocket != null) {
 			mSocket.close();
 			mSocket = null;
@@ -86,13 +87,13 @@ public final class HeatPumpSocketWrapper {
 		final InputStream is = mSocket.getInputStream();
 		final ByteBuffer buffer = createBigEndianByteBuffer(BYTES_PER_INT);
 		is.read(buffer.array());
-		mLog.debug("Read command value: " + buffer.getInt());
+		log.debug("Read command value: " + buffer.getInt());
 
 		// Now read back the status value if necessary e.g. 3004 command.
 		if (pContainsStatus) {
 			buffer.clear();
 			is.read(buffer.array());
-			mLog.debug("Read status value: " + buffer.getInt());
+			log.debug("Read status value: " + buffer.getInt());
 		}
 
 		// Now read back the amount of integer data that is being returned by the
@@ -107,7 +108,7 @@ public final class HeatPumpSocketWrapper {
 		final ByteBuffer data = createBigEndianByteBuffer(size);
 		while (read < size) {
 			read += is.read(data.array(), read, size - read);
-			mLog.debug("Bytes read: " + read + " / " + size);
+			log.debug("Bytes read: " + read + " / " + size);
 		}
 		return data;
 	}
@@ -122,7 +123,7 @@ public final class HeatPumpSocketWrapper {
 	 * @throws IOException
 	 */
 	public ByteBuffer read(final int pCount) throws IOException {
-		mLog.debug("read: reading " + pCount + "bytes of data ");
+		log.debug("read: reading " + pCount + "bytes of data ");
 		connect();
 		final ByteBuffer readBuffer = createBigEndianByteBuffer(BYTES_PER_INT * pCount);
 		// Read the result
@@ -147,13 +148,13 @@ public final class HeatPumpSocketWrapper {
 			final ByteBuffer writeBuffer = createBigEndianByteBuffer(BYTES_PER_INT * (1 + pData.length));
 
 			// Write the command
-			mLog.debug("write: sending values to heatpump: ");
+			log.debug("write: sending values to heatpump: ");
 			writeBuffer.putInt(pCommand);
-			mLog.debug("write: " + pCommand);
+			log.debug("write: " + pCommand);
 			// Write the data, if any.
 			for (int i = 0; i < pData.length; i++) {
 				writeBuffer.putInt(pData[i]);
-				mLog.debug("write: " + pData[i]);
+				log.debug("write: " + pData[i]);
 			}
 
 			// Send the data.
@@ -177,14 +178,14 @@ public final class HeatPumpSocketWrapper {
 	public void dump(final ByteBuffer pBuffer) {
 		for (int i = pBuffer.position(); i < pBuffer.limit(); i++) {
 			byte value = pBuffer.get();
-			mLog.debug(i + ", " + Integer.toHexString(Byte.toUnsignedInt(value)));
+			log.debug(i + ", " + Integer.toHexString(Byte.toUnsignedInt(value)));
 		}
 	}
 
 	public void dumpInt(final ByteBuffer pBuffer) {
 		for (int i = pBuffer.position(); i < pBuffer.limit(); i += BYTES_PER_INT) {
 			int value = pBuffer.getInt();
-			mLog.debug(i + " ,\t " + value + ",\t " + ((char) value));
+			log.debug(i + " ,\t " + value + ",\t " + ((char) value));
 		}
 	}
 

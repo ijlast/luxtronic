@@ -9,10 +9,11 @@
 // See https://docs.spring.io/spring-boot/docs/2.1.2.RELEASE/gradle-plugin/reference/html/
 
 plugins {
-	id 'org.springframework.boot' version '2.2.4.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'com.palantir.docker' version '0.24.0'
+    id 'org.springframework.boot' version '2.5.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+	
+    id 'com.palantir.docker' version '0.27.0'
     id 'eclipse'
     id 'maven-publish'
     
@@ -42,8 +43,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-hateoas'
   implementation 'org.springframework.boot:spring-boot-starter-web'
 
-  implementation 'org.springdoc:springdoc-openapi-core:1.1.44'
-  implementation 'org.springdoc:springdoc-openapi-ui:1.1.44'
+  implementation 'org.springdoc:springdoc-openapi-ui:1.5.9'
     
   compileOnly 'org.projectlombok:lombok'
   annotationProcessor 'org.projectlombok:lombok'
@@ -57,7 +57,7 @@ dependencies {
 
 bootJar {
     archiveBaseName = 'luxtronic'
-    archiveVersion =  '1.0.0-SNAPSHOT'
+    archiveVersion =  '1.0.1-SNAPSHOT'
 }
 
 docker {
