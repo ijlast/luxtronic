@@ -4,17 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import github.ijl.luxtronic.config.ServiceProperties;
+import lombok.AllArgsConstructor;
 
 @SuppressWarnings("serial")
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+@AllArgsConstructor
 public class TemperatureDeltaRangeException extends RuntimeException {
 	final String mInputDelta;
 	private ServiceProperties mProperties;
-
-	public TemperatureDeltaRangeException(final String pInputDelta, final ServiceProperties pServiceProperties) {
-		mInputDelta = pInputDelta;
-		mProperties = pServiceProperties;
-	}
 
 	/**
 	 * @see java.lang.Throwable#getMessage()

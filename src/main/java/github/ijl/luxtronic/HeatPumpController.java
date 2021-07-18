@@ -43,7 +43,7 @@ public class HeatPumpController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(path = "/parameters", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(path = "/parameters", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, String> parameters() {
 		mLog.debug("/parameters called!");
 		final Map<String, String> result = getParameters(3003, false, 0);
@@ -57,7 +57,7 @@ public class HeatPumpController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(path = "/parameter/{parameter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(path = "/parameter/{parameter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String parameter(final @PathVariable("parameter") String pParameter) {
 		mLog.debug("/parameter/" + pParameter + " called!");
 		final Map<String, String> result = getParameters(3003, false, 0);
@@ -71,7 +71,7 @@ public class HeatPumpController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(path = "/calculations", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(path = "/calculations", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, String> calculations() {
 		mLog.debug("/calcuations called!");
 		final Map<String, String> result = getParameters(3004, true, 10);
@@ -85,7 +85,7 @@ public class HeatPumpController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(path = "/calculation/{parameter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(path = "/calculation/{parameter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String calculation(final @PathVariable("parameter") String pParameter) {
 		mLog.debug("/calculation/" + pParameter + " called!");
 		final Map<String, String> result = getParameters(3004, true, 10);
