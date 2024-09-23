@@ -13,8 +13,6 @@ import java.nio.ByteOrder;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +51,7 @@ public final class HeatPumpSocketWrapper {
 			log.info("Opening heat pump connection...");
 			log.info("Using IP Address: " + mProperties.getIp());
 			log.info("Using Port: " + mProperties.getPort());
-			mSocket = new Socket(address.getHostAddress(), Integer.valueOf(mProperties.getPort()));
+			mSocket = new Socket(address.getHostAddress(), Integer.parseInt(mProperties.getPort()));
 			mSocket.setKeepAlive(true);
 		}
 	}

@@ -10,7 +10,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Parameters {
-	// TODO
 	DEFAULT(-1, "Unknown", OneToOneConverter.class),
 	ID_Einst_WK_akt(1, "Heating Target Temperature Delta", TemperatureConverter.class),
 	ID_Einst_BWS_akt(2, "DHW Target Temperature", TemperatureConverter.class),

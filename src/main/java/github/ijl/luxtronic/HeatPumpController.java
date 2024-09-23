@@ -188,7 +188,7 @@ public class HeatPumpController {
 	}
 
 	private Map<String, String> byteBufferToMap(final ByteBuffer pBuffer, boolean pUseCalculations) {
-		final Map<String, String> dataMap = new LinkedHashMap<String, String>();
+		final Map<String, String> dataMap = new LinkedHashMap<>();
 		for (int i = pBuffer.position(); i < pBuffer.limit(); i += HeatPumpSocketWrapper.BYTES_PER_INT) {
 			int index = i / HeatPumpSocketWrapper.BYTES_PER_INT;
 			String name = Integer.toString(index);

@@ -4,10 +4,9 @@ import java.util.stream.Stream;
 
 import lombok.AllArgsConstructor;
 
-@SuppressWarnings("serial")
 @AllArgsConstructor
 public abstract class AbstractInvalidEnumValueException extends RuntimeException {
-	private Class<? extends Enum<?>> mEnum;
+	private final Class<? extends Enum<?>> mEnum;
 
 	/**
 	 * Get the possible values from an Enum as a String.

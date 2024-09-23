@@ -1,12 +1,7 @@
 package github.ijl.luxtronic.format.output;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
-
-import github.ijl.luxtronic.format.FormatConverter;
 
 @Service
 public class ShutdownCodeConverter extends AbstractMapBasedConverter {

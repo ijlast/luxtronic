@@ -19,7 +19,7 @@ public class TemperatureDeltaConverter implements FormatConverter {
 	public Integer convertToHeatPumpFormat(final String pValue) {
 		float value;
 		try {
-			value = Float.valueOf(pValue);
+			value = Float.parseFloat(pValue);
 		} catch (NumberFormatException e) {
 			throw new TemperatureDeltaRangeException(pValue, mProperties);
 		}
