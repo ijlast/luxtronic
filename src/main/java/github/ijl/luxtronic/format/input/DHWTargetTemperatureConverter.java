@@ -10,7 +10,7 @@ import github.ijl.luxtronic.format.FormatConverter;
 @Service
 public class DHWTargetTemperatureConverter implements FormatConverter {
 	@Autowired
-	private ServiceProperties mProperties;
+	private ServiceProperties properties;
 
 	/**
 	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHeatPumpFormat(java.lang.String)
@@ -19,12 +19,12 @@ public class DHWTargetTemperatureConverter implements FormatConverter {
 	public Integer convertToHeatPumpFormat(final String pValue) {
 		float value;
 		try {
-			value = Float.valueOf(pValue);
+			value = Float.parseFloat(pValue);
 		} catch (NumberFormatException e) {
-			throw new DHWTemperatureRangeException(pValue, mProperties);
+			throw new DHWTemperatureRangeException(pValue, properties);
 		}
-		if (value < mProperties.getMinDHWTargetTemperature() || value > mProperties.getMaxDHWTargetTemperature()) {
-			throw new DHWTemperatureRangeException(pValue, mProperties);
+		if (value < properties.getMinDHWTargetTemperature() || value > properties.getMaxDHWTargetTemperature()) {
+			throw new DHWTemperatureRangeException(pValue, properties);
 		}
 		return (int) (10 * value);
 	}

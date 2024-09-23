@@ -9,15 +9,15 @@ import lombok.AllArgsConstructor;
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
 @AllArgsConstructor
 public class DHWTemperatureRangeException extends RuntimeException {
-	private final String mInputTemp;
-	private final ServiceProperties mProperties;
+	private final String inputTemp;
+	private final ServiceProperties properties;
 
 	/**
 	 * @see java.lang.Throwable#getMessage()
 	 */
 	@Override
 	public String getMessage() {
-		return "Temperature '" + mInputTemp + "' must be in the range [" + mProperties.getMinDHWTargetTemperature()
-				+ ", " + mProperties.getMaxDHWTargetTemperature() + "] C";
+		return "Temperature '" + inputTemp + "' must be in the range [" + properties.getMinDHWTargetTemperature()
+				+ ", " + properties.getMaxDHWTargetTemperature() + "] C";
 	}
 }

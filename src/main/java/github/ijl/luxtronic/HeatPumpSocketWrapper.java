@@ -26,13 +26,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-public final class HeatPumpSocketWrapper {
+public final class HeatPumpSocketWrapper implements AutoCloseable {
 	public static final int BYTES_PER_INT = 4;
 
 	@Autowired
-	private ServiceProperties mProperties;
-	private Socket mSocket;
-	private volatile int mFailCount = 0;
+	private ServiceProperties properties;
+	private Socket socket;
+	private volatile int failCount = 0;
 
 	public HeatPumpSocketWrapper() {
 	}
@@ -46,13 +46,13 @@ public final class HeatPumpSocketWrapper {
 	 */
 	@PostConstruct
 	protected void connect() throws UnknownHostException, IOException {
-		if (mSocket == null || !mSocket.isConnected()) {
-			final InetAddress address = InetAddress.getByName(mProperties.getIp());
+		if (socket == null || !socket.isConnected()) {
+			final InetAddress address = InetAddress.getByName(properties.getIp());
 			log.info("Opening heat pump connection...");
-			log.info("Using IP Address: " + mProperties.getIp());
-			log.info("Using Port: " + mProperties.getPort());
-			mSocket = new Socket(address.getHostAddress(), Integer.parseInt(mProperties.getPort()));
-			mSocket.setKeepAlive(true);
+			log.info("Using IP Address: " + properties.getIp());
+			log.info("Using Port: " + properties.getPort());
+			socket = new Socket(address.getHostAddress(), Integer.parseInt(properties.getPort()));
+			socket.setKeepAlive(true);
 		}
 	}
 
@@ -63,11 +63,12 @@ public final class HeatPumpSocketWrapper {
 	 * @throws IOException
 	 */
 	@PreDestroy
-	public void close() throws IOException {
+	@Override
+	public void close() throws Exception {
 		System.out.println("Closing heat pump connection!");
-		if (mSocket != null) {
-			mSocket.close();
-			mSocket = null;
+		if (socket != null) {
+			socket.close();
+			socket = null;
 		}
 	}
 
@@ -82,7 +83,7 @@ public final class HeatPumpSocketWrapper {
 	public ByteBuffer read(final boolean pContainsStatus) throws IOException {
 		connect();
 		// First read back the command that was issued.
-		final InputStream is = mSocket.getInputStream();
+		final InputStream is = socket.getInputStream();
 		final ByteBuffer buffer = createBigEndianByteBuffer(BYTES_PER_INT);
 		is.read(buffer.array());
 		log.debug("Read command value: " + buffer.getInt());
@@ -125,7 +126,7 @@ public final class HeatPumpSocketWrapper {
 		connect();
 		final ByteBuffer readBuffer = createBigEndianByteBuffer(BYTES_PER_INT * pCount);
 		// Read the result
-		final InputStream is = mSocket.getInputStream();
+		final InputStream is = socket.getInputStream();
 		is.read(readBuffer.array());
 		dump(readBuffer);
 		return readBuffer;
@@ -139,7 +140,7 @@ public final class HeatPumpSocketWrapper {
 	 * @return
 	 * @throws IOException
 	 */
-	public ByteBuffer write(final int pCommand, final int... pData) throws IOException {
+	public ByteBuffer write(final int pCommand, final int... pData) throws Exception {
 		try {
 			connect();
 			// Create the buffer with at least 4 bytes.
@@ -157,13 +158,13 @@ public final class HeatPumpSocketWrapper {
 
 			// Send the data.
 			writeBuffer.flip();
-			final OutputStream os = mSocket.getOutputStream();
+			final OutputStream os = socket.getOutputStream();
 			os.write(writeBuffer.array());
 			os.flush();
-			mFailCount = 0;
+			failCount = 0;
 			return writeBuffer;
 		} catch (final SocketException e) {
-			if (mFailCount++ < 3) {
+			if (failCount++ < 3) {
 				close();
 				return write(pCommand, pData);
 			} else {

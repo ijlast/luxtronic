@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
 public class InvalidParameterException extends AbstractInvalidEnumValueException {
-	final String mCurrentParameter;
+	final String currentParameter;
 
 	public InvalidParameterException(final String pCurrentParameter, final Class<? extends Enum<?>> pEnum) {
 		super(pEnum);
-		mCurrentParameter = pCurrentParameter;
+		currentParameter = pCurrentParameter;
 	}
 
 	/**
@@ -17,6 +17,6 @@ public class InvalidParameterException extends AbstractInvalidEnumValueException
 	 */
 	@Override
 	public String getMessage() {
-		return "Parameter '" + mCurrentParameter + "' must be one of : " + getEnumValues();
+		return "Parameter '" + currentParameter + "' must be one of : " + getEnumValues();
 	}
 }

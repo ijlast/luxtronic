@@ -9,15 +9,15 @@ import lombok.AllArgsConstructor;
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
 @AllArgsConstructor
 public class TemperatureDeltaRangeException extends RuntimeException {
-	private final String mInputDelta;
-	private final ServiceProperties mProperties;
+	private final String inputDelta;
+	private final ServiceProperties properties;
 
 	/**
 	 * @see java.lang.Throwable#getMessage()
 	 */
 	@Override
 	public String getMessage() {
-		return "Temperature Offset '" + mInputDelta + "' must be in the range [" + mProperties.getMinTemperatureDelta()
-				+ ", " + mProperties.getMaxTemperatureDelta() + "] C";
+		return "Temperature Offset '" + inputDelta + "' must be in the range [" + properties.getMinTemperatureDelta()
+				+ ", " + properties.getMaxTemperatureDelta() + "] C";
 	}
 }

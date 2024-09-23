@@ -30,9 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HeatPumpController {
 	@Autowired
-	private ApplicationContext mApplicationContext;
+	private ApplicationContext applicationContext;
 	@Autowired
-	private HeatPumpSocketWrapper mHeatPumpSocketWrapper;
+	private HeatPumpSocketWrapper heatPumpSocketWrapper;
 
 	/**
 	 * To read parameters send 3003 0000 (0x00 0x00 0x0b 0xbb 0x00 0x00 0x00 0x00)
@@ -146,14 +146,14 @@ public class HeatPumpController {
 		log.debug("value: " + pValue);
 
 		try {
-			final FormatConverter converter = mApplicationContext.getBean(pConverter);
+			final FormatConverter converter = applicationContext.getBean(pConverter);
 			// shouldn't be null
 			final Integer value = converter.convertToHeatPumpFormat(pValue);
 			log.debug("Converted value: " + value);
 
-			synchronized (mHeatPumpSocketWrapper) {
-				mHeatPumpSocketWrapper.write(3002, pEnumValue, value);
-				mHeatPumpSocketWrapper.read(2);
+			synchronized (heatPumpSocketWrapper) {
+				heatPumpSocketWrapper.write(3002, pEnumValue, value);
+				heatPumpSocketWrapper.read(2);
 			}
 		} catch (Exception e) {
 			log.error("setParameter: Exception Writing Parameter", e);
@@ -174,9 +174,9 @@ public class HeatPumpController {
 	private Map<String, String> getParameters(final int pCommand, final boolean pReadStatus, final int pSkip) {
 		Map<String, String> result = Collections.emptyMap();
 		try {
-			synchronized (mHeatPumpSocketWrapper) {
-				mHeatPumpSocketWrapper.write(pCommand, 0);
-				final ByteBuffer output = mHeatPumpSocketWrapper.read(pReadStatus);
+			synchronized (heatPumpSocketWrapper) {
+				heatPumpSocketWrapper.write(pCommand, 0);
+				final ByteBuffer output = heatPumpSocketWrapper.read(pReadStatus);
 				output.position(pSkip * HeatPumpSocketWrapper.BYTES_PER_INT);
 				result = byteBufferToMap(output, pReadStatus);
 			}
@@ -209,7 +209,7 @@ public class HeatPumpController {
 				}
 			}
 
-			final FormatConverter conv = mApplicationContext.getBean(convClass);
+			final FormatConverter conv = applicationContext.getBean(convClass);
 			dataMap.put(name, conv.convertToHumanReadable(pBuffer.getInt()));
 
 		}
