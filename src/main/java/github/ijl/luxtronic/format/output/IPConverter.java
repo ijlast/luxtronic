@@ -16,7 +16,6 @@ public class IPConverter implements FormatConverter {
 		int bytes2 = (pValue >> 16) & 0xFF;
 		int bytes3 = (pValue >> 24) & 0xFF;
 
-		return Integer.toString(bytes3) + '.' + Integer.toString(bytes2) + '.' + Integer.toString(bytes1) + '.'
-				+ Integer.toString(bytes0);
+		return Integer.toString(bytes3) + '.' + Integer.toString(bytes2) + '.' + Integer.toString(bytes1) + '.' + Integer.toString(bytes0);
 	}
 }

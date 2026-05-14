@@ -1,12 +1,13 @@
 package enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import github.ijl.luxtronic.config.v161.EnumIndex;
 import github.ijl.luxtronic.format.FormatConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
 import github.ijl.luxtronic.format.OperatingModeConverter;
 import github.ijl.luxtronic.format.output.TemperatureConverter;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
 @Getter

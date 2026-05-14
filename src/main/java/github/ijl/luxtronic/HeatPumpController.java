@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 import github.ijl.luxtronic.config.v161.Calculations;
 import github.ijl.luxtronic.config.v161.EnumConstantsMap;
 import github.ijl.luxtronic.config.v161.Parameters;
@@ -24,7 +26,6 @@ import github.ijl.luxtronic.format.FormatConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
 import github.ijl.luxtronic.param.DomesicHotWaterParameter;
 import github.ijl.luxtronic.param.HeatingParameter;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("luxtronic")
@@ -46,7 +47,7 @@ public class HeatPumpController {
 	 * To read parameters send 3003 0000 (0x00 0x00 0x0b 0xbb 0x00 0x00 0x00 0x00)
 	 * The Luxtronik responds with the command (4 bytes) and the number of
 	 * parameters that follow (4 bytes), also formatted big endian.
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(path = "/parameters", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -59,10 +60,10 @@ public class HeatPumpController {
 	 * To read parameters send 3003 0000 (0x00 0x00 0x0b 0xbb 0x00 0x00 0x00 0x00)
 	 * The Luxtronik responds with the command (4 bytes) and the number of
 	 * parameters that follow (4 bytes), also formatted big endian.
-	 * 
+	 *
 	 * @return
 	 */
-	@GetMapping(path = "/parameter/{parameter}",  produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/parameter/{parameter}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String parameter(final @PathVariable("parameter") String pParameter) {
 		log.debug("/parameter/" + pParameter + " called!");
 		final Map<String, String> result = getParameters(3003, false, 0);
@@ -73,7 +74,7 @@ public class HeatPumpController {
 	 * To read parameters send 3003 0000 (0x00 0x00 0x0b 0xbb 0x00 0x00 0x00 0x00)
 	 * The Luxtronik responds with the command (4 bytes) and the number of
 	 * parameters that follow (4 bytes), also formatted big endian.
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(path = "/calculations", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -86,7 +87,7 @@ public class HeatPumpController {
 	 * To read parameters send 3003 0000 (0x00 0x00 0x0b 0xbb 0x00 0x00 0x00 0x00)
 	 * The Luxtronik responds with the command (4 bytes) and the number of
 	 * parameters that follow (4 bytes), also formatted big endian.
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(path = "/calculation/{parameter}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -98,11 +99,12 @@ public class HeatPumpController {
 
 	/**
 	 * Set the heating parameters
-	 * 
-	 * @param pParameter one of <quote>MODE</quote> or
-	 *                   <quote>TemperatureDelta</quote>
-	 * @param pValue     on of the <code>OperatingMode</code> enums or a temperature
-	 *                   offset.
+	 *
+	 * @param pParameter
+	 *            one of <quote>MODE</quote> or <quote>TemperatureDelta</quote>
+	 * @param pValue
+	 *            on of the <code>OperatingMode</code> enums or a temperature
+	 *            offset.
 	 * @return HTTP status
 	 */
 	@PutMapping(path = "/heating/{parameter}", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -119,11 +121,12 @@ public class HeatPumpController {
 
 	/**
 	 * Set the hotwater parameters
-	 * 
-	 * @param pParameter one of <quote>MODE</quote> or
-	 *                   <quote>TemperatureDelta</quote>
-	 * @param pValue     on of the <code>OperatingMode</code> enums or a temperature
-	 *                   offset.
+	 *
+	 * @param pParameter
+	 *            one of <quote>MODE</quote> or <quote>TemperatureDelta</quote>
+	 * @param pValue
+	 *            on of the <code>OperatingMode</code> enums or a temperature
+	 *            offset.
 	 * @return HTTP status
 	 */
 	@PutMapping(path = "/hotwater/{parameter}", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -143,8 +146,7 @@ public class HeatPumpController {
 	 * parameters. synchronized as there is only one connection to the heatpump in
 	 * this version!
 	 */
-	private String setParameter(final Enum<?> pParameter, final Integer pEnumValue,
-			final Class<? extends FormatConverter> pConverter, final String pValue) {
+	private String setParameter(final Enum<?> pParameter, final Integer pEnumValue, final Class<? extends FormatConverter> pConverter, final String pValue) {
 		HttpStatus status = HttpStatus.OK;
 
 		log.debug("Parameter: " + pParameter.name());
@@ -171,10 +173,12 @@ public class HeatPumpController {
 	/**
 	 * Common code for reading parameters and calculations.synchronized as there is
 	 * only one connection to the heatpump in this version!
-	 * 
-	 * @param pCommand    command to send
-	 * @param pReadStatus whether or not to expect the extra status information when
-	 *                    reading response.
+	 *
+	 * @param pCommand
+	 *            command to send
+	 * @param pReadStatus
+	 *            whether or not to expect the extra status information when reading
+	 *            response.
 	 * @return data read from the server.
 	 */
 	private Map<String, String> getParameters(final int pCommand, final boolean pReadStatus, final int pSkip) {
@@ -217,7 +221,6 @@ public class HeatPumpController {
 
 			final FormatConverter conv = applicationContext.getBean(convClass);
 			dataMap.put(name, conv.convertToHumanReadable(pBuffer.getInt()));
-
 		}
 
 		return dataMap;

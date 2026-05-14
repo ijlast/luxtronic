@@ -1,5 +1,8 @@
 package github.ijl.luxtronic.config.v161;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import github.ijl.luxtronic.format.FormatConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
 import github.ijl.luxtronic.format.output.AsciiConverter;
@@ -15,8 +18,6 @@ import github.ijl.luxtronic.format.output.StatusLine2Converter;
 import github.ijl.luxtronic.format.output.StatusLine3Converter;
 import github.ijl.luxtronic.format.output.TemperatureConverter;
 import github.ijl.luxtronic.format.output.TimestampConverter;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
@@ -27,8 +28,7 @@ public enum Calculations implements EnumIndex {
 	ID_WEB_TEMPERATUR_TRL_EXT(13, "Return temperature in the separation tank.", TemperatureConverter.class),
 	ID_WEB_TEMPERATUR_THG(14, "Hot gas temperature.", TemperatureConverter.class),
 	ID_WEB_TEMPERATUR_TA(15, "Outside temperature.", TemperatureConverter.class),
-	ID_WEB_MITTELTEMPERATUR(16, "Average temperature outside over 24 h (function heating limit).",
-			TemperatureConverter.class),
+	ID_WEB_MITTELTEMPERATUR(16, "Average temperature outside over 24 h (function heating limit).", TemperatureConverter.class),
 	ID_WEB_TEMPERATUR_TBW(17, "Hot water actual temperature.", TemperatureConverter.class),
 	ID_WEB_EINST_BWS_AKT(18, "Hot water set temperature.", TemperatureConverter.class),
 	ID_WEB_TEMPERATUR_TWE(19, "Brine inlet temperature", TemperatureConverter.class),
@@ -182,7 +182,7 @@ public enum Calculations implements EnumIndex {
 	ID_WEB_OUT_FRH(167, "Output FRH", BooleanConverter.class),
 	ID_WEB_ANALOGIN2(168, "Analog input 2", OneToOneConverter.class),
 	ID_WEB_ANALOGIN3(169, "Analog input 3", OneToOneConverter.class),
-	ID_WEB_SAXIN(170, "Input SAX", BooleanConverter.class), 
+	ID_WEB_SAXIN(170, "Input SAX", BooleanConverter.class),
 	ID_WEB_SPLIN(171, "Input SPL", BooleanConverter.class),
 	ID_WEB_COMPACT_EXISTS(172, "Ventilation board installed", BooleanConverter.class),
 	ID_WEB_DURCHFLUSS_WQ(173, "Flow heat source", OneToOneConverter.class),

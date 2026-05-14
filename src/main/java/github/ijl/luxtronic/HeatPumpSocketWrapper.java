@@ -16,13 +16,13 @@ import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import github.ijl.luxtronic.config.ServiceProperties;
 import lombok.extern.slf4j.Slf4j;
+
+import github.ijl.luxtronic.config.ServiceProperties;
 
 /**
  * This is a wrapper around a socket to the heat pump. Ideally it should be
  * pooled.
- *
  */
 @Service
 @Slf4j
@@ -39,13 +39,13 @@ public final class HeatPumpSocketWrapper implements AutoCloseable {
 
 	/**
 	 * Opens a socket based on the configuration
-	 * 
+	 *
 	 * @return Socket, connected to the heatpump
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
 	@PostConstruct
-	protected void connect() throws UnknownHostException, IOException {
+	protected void connect() throws IOException {
 		if (socket == null || !socket.isConnected()) {
 			final InetAddress address = InetAddress.getByName(properties.getIp());
 			log.info("Opening heat pump connection...");
@@ -58,14 +58,14 @@ public final class HeatPumpSocketWrapper implements AutoCloseable {
 
 	/**
 	 * Closes the socket.
-	 * 
+	 *
 	 * @param pSocket
 	 * @throws IOException
 	 */
 	@PreDestroy
 	@Override
 	public void close() throws Exception {
-		System.out.println("Closing heat pump connection!");
+		log.info("Closing heat pump connection!");
 		if (socket != null) {
 			socket.close();
 			socket = null;
@@ -74,9 +74,10 @@ public final class HeatPumpSocketWrapper implements AutoCloseable {
 
 	/**
 	 * Reads data back variable amounts of data via the socket
-	 * 
-	 * @param pContainsStatus set to true if reading back after 3004 (Read
-	 *                        calculations) otherwise leave it as false.
+	 *
+	 * @param pContainsStatus
+	 *            set to true if reading back after 3004 (Read calculations)
+	 *            otherwise leave it as false.
 	 * @return ByteBuffer contain the data returned by the read.
 	 * @throws IOException
 	 */
@@ -116,7 +117,7 @@ public final class HeatPumpSocketWrapper implements AutoCloseable {
 	 * Reads back fixed amounts of data via the socket. When command 3002
 	 * (setParameter) is sent to the heat pump it should respond with 1) command (4
 	 * bytes) 2) the parameter value (4 bytes)
-	 * 
+	 *
 	 * @param pData
 	 * @return
 	 * @throws IOException
@@ -134,9 +135,11 @@ public final class HeatPumpSocketWrapper implements AutoCloseable {
 
 	/**
 	 * Writes to the heat pump, a command and variable amounts of data
-	 * 
-	 * @param pCommand the command, must be present.
-	 * @param pData    variables amounts of data.
+	 *
+	 * @param pCommand
+	 *            the command, must be present.
+	 * @param pData
+	 *            variables amounts of data.
 	 * @return
 	 * @throws IOException
 	 */
@@ -190,7 +193,7 @@ public final class HeatPumpSocketWrapper implements AutoCloseable {
 
 	/**
 	 * Convenience method for big endian byte buffer.
-	 * 
+	 *
 	 * @param pBytes
 	 * @return
 	 */

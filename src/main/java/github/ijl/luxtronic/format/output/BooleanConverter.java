@@ -4,8 +4,9 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
-import github.ijl.luxtronic.format.FormatConverter;
 import lombok.extern.slf4j.Slf4j;
+
+import github.ijl.luxtronic.format.FormatConverter;
 
 @Service
 @Slf4j

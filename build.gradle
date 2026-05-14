@@ -12,6 +12,7 @@ plugins {
   id 'java'
   id 'org.springframework.boot' version '3.2.10'
   id 'io.spring.dependency-management' version '1.1.6'
+  id 'com.diffplug.spotless' version '6.20.0'
 	
     //id 'com.palantir.docker' version '0.27.0'
     
@@ -23,7 +24,7 @@ group = 'github.ijl'
 version = '0.0.2-SNAPSHOT'
 
 ext {
-  lombokVersion = '1.18.34'
+  lombokVersion = '1.18.46'
 }
 
 java {
@@ -71,10 +72,19 @@ dependencies {
   testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
   //testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-  testImplementation("org.testng:testng:7.8.0")
+  testImplementation("org.testng:testng:7.9.0")
 
 }
 
+spotless {
+  java {
+    target 'src/**/*.java'
+    // Import order: java, javax, org, lombok, github
+    importOrder 'java','javax','org','lombok','github'
+    removeUnusedImports()
+    eclipse().configFile('.github/eclipse-formatter.xml')
+  }
+}
 
 bootJar {
     archiveBaseName = 'luxtronic'

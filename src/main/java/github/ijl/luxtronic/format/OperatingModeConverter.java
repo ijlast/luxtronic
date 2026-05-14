@@ -2,14 +2,14 @@ package github.ijl.luxtronic.format;
 
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import github.ijl.luxtronic.exception.InvalidOperatingModeException;
 import github.ijl.luxtronic.param.OperatingMode;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class OperatingModeConverter implements FormatConverter {
-
 
 	/**
 	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)

@@ -12,17 +12,15 @@ import github.ijl.luxtronic.format.FormatConverter;
 @Service
 public class AbstractMapBasedConverter implements FormatConverter {
 	private final Map<Integer, String> humanReadableValues;
-	
+
 	/**
-	 * 
-	 * @param pHumanReadableValues object array consisting of integer key and string value.
+	 * @param pHumanReadableValues
+	 *            object array consisting of integer key and string value.
 	 */
-	protected  AbstractMapBasedConverter(final Object[][] pHumanReadableValues) {
-		humanReadableValues = Stream
-				.of(pHumanReadableValues)
-				.collect(Collectors.toMap(data -> (Integer) data[0], data -> (String) data[1]));
+	protected AbstractMapBasedConverter(final Object[][] pHumanReadableValues) {
+		humanReadableValues = Stream.of(pHumanReadableValues).collect(Collectors.toMap(data -> (Integer) data[0], data -> (String) data[1]));
 	}
-	
+
 	/**
 	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
 	 */

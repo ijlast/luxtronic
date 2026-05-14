@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profiles version="12">
+  <profile kind="CodeFormatterProfile" name="Luxtronic" version="12">
+    <!-- Maximum line length -->
+    <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="180"/>
+    <!-- Import order: java, javax, org, lombok, github, then others -->
+    <setting id="org.eclipse.jdt.core.formatter.importOrder" value="java,javax,org,lombok,github,*"/>
+    <!-- Static import order follows the same groups -->
+    <setting id="org.eclipse.jdt.core.formatter.importOrderStatic" value="java,javax,org,lombok,github,*"/>
+    <setting id="org.eclipse.jdt.core.formatter.alignment_for_enum_constants" value="49"/>
+  </profile>
+</profiles>
