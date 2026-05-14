@@ -21,7 +21,7 @@ public class BooleanConverter implements FormatConverter {
 	}
 
 	public Function<Integer, String> getFunction() {
-		return (input) -> {
+		return input -> {
 			if (input > 1) {
 				log.warn("Converting value >1 to boolean \"false\"");
 			}
