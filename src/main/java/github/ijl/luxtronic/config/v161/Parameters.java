@@ -4,44 +4,19 @@ import github.ijl.luxtronic.format.FormatConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
 import github.ijl.luxtronic.format.OperatingModeConverter;
 import github.ijl.luxtronic.format.output.TemperatureConverter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-public enum Parameters {
-	// TODO
-	DEFAULT(-1, "Unknown", OneToOneConverter.class), ID_Einst_WK_akt(1, "Heating Target Temperature Delta", TemperatureConverter.class),
-	ID_Einst_BWS_akt(2, "DHW Target Temperature", TemperatureConverter.class),
-	ID_Ba_Hz_akt(3, "Heating Mode", OperatingModeConverter.class), ID_Ba_Bw_akt(4, "DHW Mode", OperatingModeConverter.class);
+@AllArgsConstructor
+@Getter
+public enum Parameters implements EnumIndex {
+	DEFAULT(-1, "Unknown", OneToOneConverter.class),
+	ID_EINST_WK_AKT(1, "Heating Target Temperature Delta", TemperatureConverter.class),
+	ID_EINST_BWS_AKT(2, "DHW Target Temperature", TemperatureConverter.class),
+	ID_BA_HZ_AKT(3, "Heating Mode", OperatingModeConverter.class),
+	ID_BA_BW_AKT(4, "DHW Mode", OperatingModeConverter.class);
 
-	private final Integer mIndex;
-	private final String mDescription;
-	private final Class<? extends FormatConverter> mFormatConverterClass;
-
-	private Parameters(final Integer pIndex, final String pDescription,
-			final Class<? extends FormatConverter> pConverterClass) {
-		mIndex = pIndex;
-		mDescription = pDescription;
-		mFormatConverterClass = pConverterClass;
-	}
-
-	public Integer getIntegerValue() {
-		return mIndex;
-	}
-
-	public String getDescription() {
-		return mDescription;
-	}
-
-	public Class<? extends FormatConverter> getFormatConverterClass() {
-		return mFormatConverterClass;
-	}
-
-	public static Parameters getParameter(final int pIndex) {
-		Parameters calc = null;
-		for (final Parameters testCalc : Parameters.class.getEnumConstants()) {
-			if (pIndex == testCalc.getIntegerValue()) {
-				calc = testCalc;
-				break;
-			}
-		}
-		return calc;
-	}
+	private final Integer integerValue;
+	private final String description;
+	private final Class<? extends FormatConverter> formatConverterClass;
 }

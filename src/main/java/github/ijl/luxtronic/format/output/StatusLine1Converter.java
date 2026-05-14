@@ -2,37 +2,14 @@ package github.ijl.luxtronic.format.output;
 
 import org.springframework.stereotype.Service;
 
-import github.ijl.luxtronic.format.FormatConverter;
-
 @Service
-public class StatusLine1Converter implements FormatConverter {
-	/**
-	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
-	 */
-	@Override
-	public String convertToHumanReadable(final Integer pValue) {
-		switch (pValue) {
-		case 0:
-			return "HP is running";
-		case 1:
-			return "HP is off";
-		case 2:
-			return "HP is coming";
-		case 3:
-			return "Error: mem space 0";
-		case 4:
-			return "Defrost";
-		case 5:
-			return "Waiting for LIN";
-		case 6:
-			return "Comp. heats up";
-		case 7:
-			return "Pump flow";
+public class StatusLine1Converter extends AbstractMapBasedConverter {
+	private static final Object[][] HUMAN_READABLE_VALUES = new Object[][] { { 0, "HP is running" }, { 1, "HP is off" },
+			{ 2, "HP is coming" }, { 3, "Error: mem space 0" }, { 4, "Defrost" }, { 5, "Waiting for LIN" },
+			{ 6, "Comp. heats up" }, { 7, "Pump flow" }, };
 
-
-		default:
-			return Integer.toString(pValue) + ": Unknown";
-		}
+	public StatusLine1Converter() {
+		super(HUMAN_READABLE_VALUES);
 	}
 
 }

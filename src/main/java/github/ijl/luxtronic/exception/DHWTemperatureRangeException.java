@@ -4,24 +4,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import github.ijl.luxtronic.config.ServiceProperties;
+import lombok.AllArgsConstructor;
 
-@SuppressWarnings("serial")
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+@AllArgsConstructor
 public class DHWTemperatureRangeException extends RuntimeException {
-	final String mInputTemp;
-	private ServiceProperties mProperties;
-
-	public DHWTemperatureRangeException(final String pInputTemperature, final ServiceProperties pServiceProperties) {
-		mInputTemp = pInputTemperature;
-		mProperties = pServiceProperties;
-	}
+	private final String inputTemp;
+	private final ServiceProperties properties;
 
 	/**
 	 * @see java.lang.Throwable#getMessage()
 	 */
 	@Override
 	public String getMessage() {
-		return "Temperature '" + mInputTemp + "' must be in the range [" + mProperties.getMinDHWTargetTemperature()
-				+ ", " + mProperties.getMaxDHWTargetTemperature() + "] C";
+		return "Temperature '" + inputTemp + "' must be in the range [" + properties.getMinDHWTargetTemperature()
+				+ ", " + properties.getMaxDHWTargetTemperature() + "] C";
 	}
 }

@@ -9,4 +9,4 @@ heatpump:
 
 logging:
   level:
-    github: DEBUG
+    github: INFO

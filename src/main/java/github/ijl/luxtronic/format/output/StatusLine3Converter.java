@@ -2,52 +2,16 @@ package github.ijl.luxtronic.format.output;
 
 import org.springframework.stereotype.Service;
 
-import github.ijl.luxtronic.format.FormatConverter;
-
 @Service
-public class StatusLine3Converter implements FormatConverter {
-	/**
-	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
-	 */
-	@Override
-	public String convertToHumanReadable(final Integer pValue) {
-		switch (pValue) {
-		case 0:
-			return "heating mode";
-		case 1:
-			return "no request";
-		case 2:
-			return "mains switch-on delay";
-		case 3:
-			return "switching cycle lock";
-		case 4:
-			return "blocking time";
-		case 5:
-			return "dom. hot water";
-		case 6:
-			return "info heating program";
-		case 7:
-			return "defrost";
-		case 8:
-			return "pump flow";
-		case 9:
-			return "thermal disinfection";
-		case 10:
-			return "cooling mode";
-		case 12:
-			return "swimming pool / photovoltaic ";
-		case 13:
-			return "heating ext. Energy source";
-		case 14:
-			return "hot water ext. Energy source";
-		case 16:
-			return "flow monitoring";
-		case 17:
-			return "second heat generator 1 operation ";
+public class StatusLine3Converter extends AbstractMapBasedConverter {
+	private static final Object[][] HUMAN_READABLE_VALUES = new Object[][] { { 0, "heating mode" }, { 1, "no request" },
+			{ 2, "mains switch-on delay" }, { 3, "switching cycle lock" }, { 4, "blocking time" },
+			{ 5, "dom. hot water" }, { 6, "info heating program" }, { 7, "defrost" }, { 8, "pump flow" },
+			{ 9, "thermal disinfection" }, { 10, "cooling mode" }, { 12, "swimming pool / photovoltaic " },
+			{ 13, "heating ext. Energy source" }, { 14, "hot water ext. Energy source" }, { 16, "flow monitoring" },
+			{ 17, "second heat generator 1 operation " }, };
 
-
-		default:
-			return Integer.toString(pValue) + ": Unknown";
-		}
+	public StatusLine3Converter() {
+		super(HUMAN_READABLE_VALUES);
 	}
 }

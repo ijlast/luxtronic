@@ -2,13 +2,11 @@ package github.ijl.luxtronic.exception;
 
 import java.util.stream.Stream;
 
-@SuppressWarnings("serial")
-public abstract class AbstractInvalidEnumValueException extends RuntimeException {
-	private Class<? extends Enum<?>> mEnum;
+import lombok.AllArgsConstructor;
 
-	public AbstractInvalidEnumValueException(final Class<? extends Enum<?>> pEnum) {
-		mEnum = pEnum;
-	}
+@AllArgsConstructor
+public abstract class AbstractInvalidEnumValueException extends RuntimeException {
+	private final Class<? extends Enum<?>> mEnum;
 
 	/**
 	 * Get the possible values from an Enum as a String.

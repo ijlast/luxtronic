@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -12,12 +13,11 @@ import java.nio.ByteOrder;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import github.ijl.luxtronic.config.ServiceProperties;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This is a wrapper around a socket to the heat pump. Ideally it should be
@@ -25,13 +25,14 @@ import github.ijl.luxtronic.config.ServiceProperties;
  *
  */
 @Service
-public final class HeatPumpSocketWrapper {
+@Slf4j
+public final class HeatPumpSocketWrapper implements AutoCloseable {
 	public static final int BYTES_PER_INT = 4;
-	private Logger mLog = LoggerFactory.getLogger(HeatPumpSocketWrapper.class);
 
 	@Autowired
-	private ServiceProperties mProperties;
-	private Socket mSocket;
+	private ServiceProperties properties;
+	private Socket socket;
+	private volatile int failCount = 0;
 
 	public HeatPumpSocketWrapper() {
 	}
@@ -45,13 +46,13 @@ public final class HeatPumpSocketWrapper {
 	 */
 	@PostConstruct
 	protected void connect() throws UnknownHostException, IOException {
-		if (mSocket == null || !mSocket.isConnected()) {
-			final InetAddress address = InetAddress.getByName(mProperties.getIp());
-			mLog.info("Opening heat pump connection...");
-			mLog.info("Using IP Address: " + mProperties.getIp());
-			mLog.info("Using Port: " + mProperties.getPort());
-			mSocket = new Socket(address.getHostAddress(), Integer.valueOf(mProperties.getPort()));
-			mSocket.setKeepAlive(true);
+		if (socket == null || !socket.isConnected()) {
+			final InetAddress address = InetAddress.getByName(properties.getIp());
+			log.info("Opening heat pump connection...");
+			log.info("Using IP Address: " + properties.getIp());
+			log.info("Using Port: " + properties.getPort());
+			socket = new Socket(address.getHostAddress(), Integer.parseInt(properties.getPort()));
+			socket.setKeepAlive(false);
 		}
 	}
 
@@ -62,11 +63,12 @@ public final class HeatPumpSocketWrapper {
 	 * @throws IOException
 	 */
 	@PreDestroy
-	public void close() throws IOException {
-		mLog.info("Closing heat pump connection!");
-		if (mSocket != null) {
-			mSocket.close();
-			mSocket = null;
+	@Override
+	public void close() throws Exception {
+		System.out.println("Closing heat pump connection!");
+		if (socket != null) {
+			socket.close();
+			socket = null;
 		}
 	}
 
@@ -81,16 +83,16 @@ public final class HeatPumpSocketWrapper {
 	public ByteBuffer read(final boolean pContainsStatus) throws IOException {
 		connect();
 		// First read back the command that was issued.
-		final InputStream is = mSocket.getInputStream();
+		final InputStream is = socket.getInputStream();
 		final ByteBuffer buffer = createBigEndianByteBuffer(BYTES_PER_INT);
 		is.read(buffer.array());
-		mLog.debug("Read command value: " + buffer.getInt());
+		log.debug("Read command value: " + buffer.getInt());
 
 		// Now read back the status value if necessary e.g. 3004 command.
 		if (pContainsStatus) {
 			buffer.clear();
 			is.read(buffer.array());
-			mLog.debug("Read status value: " + buffer.getInt());
+			log.debug("Read status value: " + buffer.getInt());
 		}
 
 		// Now read back the amount of integer data that is being returned by the
@@ -105,7 +107,7 @@ public final class HeatPumpSocketWrapper {
 		final ByteBuffer data = createBigEndianByteBuffer(size);
 		while (read < size) {
 			read += is.read(data.array(), read, size - read);
-			mLog.debug("Bytes read: " + read + " / " + size);
+			log.debug("Bytes read: " + read + " / " + size);
 		}
 		return data;
 	}
@@ -120,11 +122,11 @@ public final class HeatPumpSocketWrapper {
 	 * @throws IOException
 	 */
 	public ByteBuffer read(final int pCount) throws IOException {
-		mLog.debug("read: reading " + pCount + "bytes of data ");
+		log.debug("read: reading " + pCount + "bytes of data ");
 		connect();
 		final ByteBuffer readBuffer = createBigEndianByteBuffer(BYTES_PER_INT * pCount);
 		// Read the result
-		final InputStream is = mSocket.getInputStream();
+		final InputStream is = socket.getInputStream();
 		is.read(readBuffer.array());
 		dump(readBuffer);
 		return readBuffer;
@@ -138,40 +140,51 @@ public final class HeatPumpSocketWrapper {
 	 * @return
 	 * @throws IOException
 	 */
-	public ByteBuffer write(final int pCommand, final int... pData) throws IOException {
-		connect();
-		// Create the buffer with at least 4 bytes.
-		final ByteBuffer writeBuffer = createBigEndianByteBuffer(BYTES_PER_INT * (1 + pData.length));
+	public ByteBuffer write(final int pCommand, final int... pData) throws Exception {
+		try {
+			connect();
+			// Create the buffer with at least 4 bytes.
+			final ByteBuffer writeBuffer = createBigEndianByteBuffer(BYTES_PER_INT * (1 + pData.length));
 
-		// Write the command
-		mLog.debug("write: sending values to heatpump: ");
-		writeBuffer.putInt(pCommand);
-		mLog.debug("write: " + pCommand);
-		// Write the data, if any.
-		for (int i = 0; i < pData.length; i++) {
-			writeBuffer.putInt(pData[i]);
-			mLog.debug("write: " + pData[i]);
+			// Write the command
+			log.debug("write: sending values to heatpump: ");
+			writeBuffer.putInt(pCommand);
+			log.debug("write: " + pCommand);
+			// Write the data, if any.
+			for (int i = 0; i < pData.length; i++) {
+				writeBuffer.putInt(pData[i]);
+				log.debug("write: " + pData[i]);
+			}
+
+			// Send the data.
+			writeBuffer.flip();
+			final OutputStream os = socket.getOutputStream();
+			os.write(writeBuffer.array());
+			os.flush();
+			failCount = 0;
+			return writeBuffer;
+		} catch (final SocketException e) {
+			if (failCount++ < 3) {
+				close();
+				return write(pCommand, pData);
+			} else {
+				System.exit(1); // should trigger restart or docker container
+				return null;
+			}
 		}
-
-		// Send the data.
-		writeBuffer.flip();
-		final OutputStream os = mSocket.getOutputStream();
-		os.write(writeBuffer.array());
-		os.flush();
-		return writeBuffer;
 	}
 
 	public void dump(final ByteBuffer pBuffer) {
 		for (int i = pBuffer.position(); i < pBuffer.limit(); i++) {
 			byte value = pBuffer.get();
-			mLog.debug(i + ", " + Integer.toHexString(Byte.toUnsignedInt(value)));
+			log.debug(i + ", " + Integer.toHexString(Byte.toUnsignedInt(value)));
 		}
 	}
 
 	public void dumpInt(final ByteBuffer pBuffer) {
 		for (int i = pBuffer.position(); i < pBuffer.limit(); i += BYTES_PER_INT) {
 			int value = pBuffer.getInt();
-			mLog.debug(i + " ,\t " + value + ",\t " + ((char) value));
+			log.debug(i + " ,\t " + value + ",\t " + ((char) value));
 		}
 	}
 

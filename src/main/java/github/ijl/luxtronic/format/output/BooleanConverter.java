@@ -1,24 +1,30 @@
 package github.ijl.luxtronic.format.output;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.function.Function;
+
 import org.springframework.stereotype.Service;
 
 import github.ijl.luxtronic.format.FormatConverter;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class BooleanConverter implements FormatConverter {
-	private Logger mLog = LoggerFactory.getLogger(BooleanConverter.class);
 
 	/**
 	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
 	 */
 	@Override
 	public String convertToHumanReadable(final Integer pValue) {
-		if (pValue > 1) {
-			mLog.warn("Converting value >1 to boolean \"false\"");
-		}
-		return Boolean.toString(pValue.equals(1));
+		return getFunction().apply(pValue);
 	}
 
+	public Function<Integer, String> getFunction() {
+		return (input) -> {
+			if (input > 1) {
+				log.warn("Converting value >1 to boolean \"false\"");
+			}
+			return Boolean.toString(input.equals(1));
+		};
+	}
 }

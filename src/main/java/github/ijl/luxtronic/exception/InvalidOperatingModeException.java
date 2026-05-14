@@ -3,14 +3,13 @@ package github.ijl.luxtronic.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@SuppressWarnings("serial")
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
 public class InvalidOperatingModeException extends AbstractInvalidEnumValueException {
-	final String mInputMode;
+	final String inputMode;
 
 	public InvalidOperatingModeException(final String pInputParameter, final Class<? extends Enum<?>> pEnum) {
 		super(pEnum);
-		mInputMode = pInputParameter;
+		inputMode = pInputParameter;
 	}
 
 	/*
@@ -18,6 +17,6 @@ public class InvalidOperatingModeException extends AbstractInvalidEnumValueExcep
 	 */
 	@Override
 	public String getMessage() {
-		return "Mode '" + mInputMode + "' must be one of : " + getEnumValues();
+		return "Mode '" + inputMode + "' must be one of : " + getEnumValues();
 	}
 }

@@ -10,7 +10,7 @@ import github.ijl.luxtronic.format.FormatConverter;
 @Service
 public class TemperatureDeltaConverter implements FormatConverter {
 	@Autowired
-	private ServiceProperties mProperties;
+	private ServiceProperties properties;
 
 	/**
 	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHeatPumpFormat(java.lang.String)
@@ -19,12 +19,12 @@ public class TemperatureDeltaConverter implements FormatConverter {
 	public Integer convertToHeatPumpFormat(final String pValue) {
 		float value;
 		try {
-			value = Float.valueOf(pValue);
+			value = Float.parseFloat(pValue);
 		} catch (NumberFormatException e) {
-			throw new TemperatureDeltaRangeException(pValue, mProperties);
+			throw new TemperatureDeltaRangeException(pValue, properties);
 		}
-		if (value < mProperties.getMinTemperatureDelta() || value > mProperties.getMaxTemperatureDelta()) {
-			throw new TemperatureDeltaRangeException(pValue, mProperties);
+		if (value < properties.getMinTemperatureDelta() || value > properties.getMaxTemperatureDelta()) {
+			throw new TemperatureDeltaRangeException(pValue, properties);
 		}
 		return (int) (10 * value);
 	}

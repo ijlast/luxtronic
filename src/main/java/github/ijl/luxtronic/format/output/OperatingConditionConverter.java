@@ -2,35 +2,13 @@ package github.ijl.luxtronic.format.output;
 
 import org.springframework.stereotype.Service;
 
-import github.ijl.luxtronic.format.FormatConverter;
-
 @Service
-public class OperatingConditionConverter implements FormatConverter {
-	/**
-	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
-	 */
-	@Override
-	public String convertToHumanReadable(final Integer pValue) {
-		switch (pValue) {
-		case 0:
-			return "0: heating";
-		case 1:
-			return "1: hot water";
-		case 2:
-			return "2: swimming pool / photovoltaic";
-		case 3:
-			return "3: power supply";
-		case 4:
-			return "4: defrosting";
-		case 5:
-			return "5: no request";
-		case 6:
-			return "6: heating ext. Energy source";
-		case 7:
-			return "7: cooling mode";
+public class OperatingConditionConverter extends AbstractMapBasedConverter {
+	private static final Object[][] HUMAN_READABLE_VALUES = new Object[][] { { 0, "0: heating" }, { 1, "1: hot water" },
+			{ 2, "2: swimming pool / photovoltaic" }, { 3, "3: power supply" }, { 4, "4: defrosting" },
+			{ 5, "5: no request" }, { 6, "6: heating ext. Energy source" }, { 7, "7: cooling mode" }, };
 
-		default:
-			return Integer.toString(pValue) + ": Unknown";
-		}
+	public OperatingConditionConverter() {
+		super(HUMAN_READABLE_VALUES);
 	}
 }

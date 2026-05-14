@@ -5,49 +5,41 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import github.ijl.luxtronic.config.v161.Calculations;
+import github.ijl.luxtronic.config.v161.EnumConstantsMap;
 import github.ijl.luxtronic.config.v161.Parameters;
 import github.ijl.luxtronic.exception.InvalidParameterException;
 import github.ijl.luxtronic.format.FormatConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
 import github.ijl.luxtronic.param.DomesicHotWaterParameter;
 import github.ijl.luxtronic.param.HeatingParameter;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("luxtronic")
+@Slf4j
 public class HeatPumpController {
-	private Logger mLog = LoggerFactory.getLogger(HeatPumpController.class);
+	private final ApplicationContext applicationContext;
+	private final HeatPumpSocketWrapper heatPumpSocketWrapper;
+
+	private final Map<Integer, Calculations> calculationsMap = EnumConstantsMap.buildFrom(Calculations.class);
+	private final Map<Integer, Parameters> parametersMap = EnumConstantsMap.buildFrom(Parameters.class);
 
 	@Autowired
-	private ApplicationContext mApplicationContext;
-	@Autowired
-	private HeatPumpSocketWrapper mHeatPumpSocketWrapper;
-
-	/**
-	 * To read parameters send 3003 0000 (0x00 0x00 0x0b 0xbb 0x00 0x00 0x00 0x00)
-	 * The Luxtronik responds with the command (4 bytes) and the number of
-	 * parameters that follow (4 bytes), also formatted big endian.
-	 * 
-	 * @return
-	 */
-	@RequestMapping(path = "/parameters", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody Map<String, String> parameters() {
-		mLog.debug("/parameters called!");
-		final Map<String, String> result = getParameters(3003, false, 0);
-		return result;
+	public HeatPumpController(ApplicationContext applicationContext, HeatPumpSocketWrapper heatPumpSocketWrapper) {
+		this.applicationContext = applicationContext;
+		this.heatPumpSocketWrapper = heatPumpSocketWrapper;
 	}
 
 	/**
@@ -57,9 +49,22 @@ public class HeatPumpController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(path = "/parameter/{parameter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody String parameter(final @PathVariable("parameter") String pParameter) {
-		mLog.debug("/parameter/" + pParameter + " called!");
+	@GetMapping(path = "/parameters", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, String> parameters() {
+		log.debug("/parameters called!");
+		return getParameters(3003, false, 0);
+	}
+
+	/**
+	 * To read parameters send 3003 0000 (0x00 0x00 0x0b 0xbb 0x00 0x00 0x00 0x00)
+	 * The Luxtronik responds with the command (4 bytes) and the number of
+	 * parameters that follow (4 bytes), also formatted big endian.
+	 * 
+	 * @return
+	 */
+	@GetMapping(path = "/parameter/{parameter}",  produces = MediaType.APPLICATION_JSON_VALUE)
+	public String parameter(final @PathVariable("parameter") String pParameter) {
+		log.debug("/parameter/" + pParameter + " called!");
 		final Map<String, String> result = getParameters(3003, false, 0);
 		return result.get(pParameter);
 	}
@@ -71,11 +76,10 @@ public class HeatPumpController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(path = "/calculations", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody Map<String, String> calculations() {
-		mLog.debug("/calcuations called!");
-		final Map<String, String> result = getParameters(3004, true, 10);
-		return result;
+	@GetMapping(path = "/calculations", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, String> calculations() {
+		log.debug("/calcuations called!");
+		return getParameters(3004, true, 10);
 	}
 
 	/**
@@ -85,9 +89,9 @@ public class HeatPumpController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(path = "/calculation/{parameter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody String calculation(final @PathVariable("parameter") String pParameter) {
-		mLog.debug("/calculation/" + pParameter + " called!");
+	@GetMapping(path = "/calculation/{parameter}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String calculation(final @PathVariable("parameter") String pParameter) {
+		log.debug("/calculation/" + pParameter + " called!");
 		final Map<String, String> result = getParameters(3004, true, 10);
 		return result.get(pParameter);
 	}
@@ -101,9 +105,9 @@ public class HeatPumpController {
 	 *                   offset.
 	 * @return HTTP status
 	 */
-	@RequestMapping(path = "/heating/{parameter}", method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
+	@PutMapping(path = "/heating/{parameter}", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String heating(@PathVariable("parameter") String pParameter, @RequestBody String pValue) {
-		mLog.debug("/heating/" + pParameter + " called with value: " + pValue);
+		log.debug("/heating/" + pParameter + " called with value: " + pValue);
 		try {
 			final HeatingParameter parameter = HeatingParameter.valueOf(pParameter);
 			final Class<? extends FormatConverter> convClass = parameter.getFormatConverterClass();
@@ -122,9 +126,9 @@ public class HeatPumpController {
 	 *                   offset.
 	 * @return HTTP status
 	 */
-	@RequestMapping(path = "/hotwater/{parameter}", method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
+	@PutMapping(path = "/hotwater/{parameter}", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String hotwater(@PathVariable("parameter") String pParameter, @RequestBody String pValue) {
-		mLog.debug("/hotwater/" + pParameter + " called with value: " + pValue);
+		log.debug("/hotwater/" + pParameter + " called with value: " + pValue);
 		try {
 			final DomesicHotWaterParameter parameter = DomesicHotWaterParameter.valueOf(pParameter);
 			final Class<? extends FormatConverter> convClass = parameter.getFormatConverterClass();
@@ -143,22 +147,22 @@ public class HeatPumpController {
 			final Class<? extends FormatConverter> pConverter, final String pValue) {
 		HttpStatus status = HttpStatus.OK;
 
-		mLog.debug("Parameter: " + pParameter.name());
-		mLog.debug("Converter class: " + pConverter);
-		mLog.debug("value: " + pValue);
+		log.debug("Parameter: " + pParameter.name());
+		log.debug("Converter class: " + pConverter);
+		log.debug("value: " + pValue);
 
 		try {
-			final FormatConverter converter = mApplicationContext.getBean(pConverter);
+			final FormatConverter converter = applicationContext.getBean(pConverter);
 			// shouldn't be null
 			final Integer value = converter.convertToHeatPumpFormat(pValue);
-			mLog.debug("Converted value: " + value);
+			log.debug("Converted value: " + value);
 
-			synchronized (mHeatPumpSocketWrapper) {
-				mHeatPumpSocketWrapper.write(3002, pEnumValue, value);
-				mHeatPumpSocketWrapper.read(2);
+			synchronized (heatPumpSocketWrapper) {
+				heatPumpSocketWrapper.write(3002, pEnumValue, value);
+				heatPumpSocketWrapper.read(2);
 			}
 		} catch (Exception e) {
-			mLog.error("setParameter: Exception Writing Parameter", e);
+			log.error("setParameter: Exception Writing Parameter", e);
 			throw new RuntimeException(e);
 		}
 		return status.toString();
@@ -176,21 +180,21 @@ public class HeatPumpController {
 	private Map<String, String> getParameters(final int pCommand, final boolean pReadStatus, final int pSkip) {
 		Map<String, String> result = Collections.emptyMap();
 		try {
-			synchronized (mHeatPumpSocketWrapper) {
-				mHeatPumpSocketWrapper.write(pCommand, 0);
-				final ByteBuffer output = mHeatPumpSocketWrapper.read(pReadStatus);
+			synchronized (heatPumpSocketWrapper) {
+				heatPumpSocketWrapper.write(pCommand, 0);
+				final ByteBuffer output = heatPumpSocketWrapper.read(pReadStatus);
 				output.position(pSkip * HeatPumpSocketWrapper.BYTES_PER_INT);
 				result = byteBufferToMap(output, pReadStatus);
 			}
 		} catch (final Exception e) {
-			mLog.error("Exception Writing Parameter", e);
+			log.error("Exception Writing Parameter", e);
 			throw new RuntimeException(e);
 		}
 		return result;
 	}
 
 	private Map<String, String> byteBufferToMap(final ByteBuffer pBuffer, boolean pUseCalculations) {
-		final Map<String, String> dataMap = new LinkedHashMap<String, String>();
+		final Map<String, String> dataMap = new LinkedHashMap<>();
 		for (int i = pBuffer.position(); i < pBuffer.limit(); i += HeatPumpSocketWrapper.BYTES_PER_INT) {
 			int index = i / HeatPumpSocketWrapper.BYTES_PER_INT;
 			String name = Integer.toString(index);
@@ -198,20 +202,20 @@ public class HeatPumpController {
 
 			// Switch between parameters and calculations
 			if (pUseCalculations) {
-				final Calculations calc = Calculations.getCalculation(index);
+				final Calculations calc = calculationsMap.get(index);
 				if (calc != null) {
 					convClass = calc.getFormatConverterClass();
 					name = calc.name();
 				}
 			} else {
-				final Parameters param = Parameters.getParameter(index);
+				final Parameters param = parametersMap.get(index);
 				if (param != null) {
 					convClass = param.getFormatConverterClass();
 					name = param.name();
 				}
 			}
 
-			final FormatConverter conv = mApplicationContext.getBean(convClass);
+			final FormatConverter conv = applicationContext.getBean(convClass);
 			dataMap.put(name, conv.convertToHumanReadable(pBuffer.getInt()));
 
 		}
