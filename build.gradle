@@ -22,6 +22,10 @@ plugins {
 group = 'github.ijl'
 version = '0.0.2-SNAPSHOT'
 
+ext {
+  lombokVersion = '1.18.34'
+}
+
 java {
   toolchain {
     languageVersion = JavaLanguageVersion.of(17)
@@ -61,11 +65,14 @@ dependencies {
 
   implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     
-  compileOnly 'org.projectlombok:lombok:1.18.34'
-  annotationProcessor 'org.projectlombok:lombok:1.18.34'
-  
+  compileOnly "org.projectlombok:lombok:${lombokVersion}"
+  annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+  testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+  testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
   //testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+  testImplementation("org.testng:testng:7.8.0")
+
 }
 
 
@@ -74,6 +81,9 @@ bootJar {
     archiveVersion =  version
 }
 
+test {
+  useTestNG()
+}
 /*
 docker {
 	name = 'luxtonic-rest-server'

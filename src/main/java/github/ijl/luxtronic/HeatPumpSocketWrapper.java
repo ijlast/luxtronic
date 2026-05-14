@@ -52,7 +52,7 @@ public final class HeatPumpSocketWrapper implements AutoCloseable {
 			log.info("Using IP Address: " + properties.getIp());
 			log.info("Using Port: " + properties.getPort());
 			socket = new Socket(address.getHostAddress(), Integer.parseInt(properties.getPort()));
-			socket.setKeepAlive(true);
+			socket.setKeepAlive(false);
 		}
 	}
 
