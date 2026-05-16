@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -114,7 +115,7 @@ public class HeatPumpController {
 			final HeatingParameter parameter = HeatingParameter.valueOf(pParameter);
 			final Class<? extends FormatConverter> convClass = parameter.getFormatConverterClass();
 			return setParameter(parameter, parameter.getIntegerValue(), convClass, pValue);
-		} catch (IllegalArgumentException iae) {
+		} catch (IllegalArgumentException _) {
 			throw new InvalidParameterException(pParameter, HeatingParameter.class);
 		}
 	}
@@ -136,7 +137,7 @@ public class HeatPumpController {
 			final DomesicHotWaterParameter parameter = DomesicHotWaterParameter.valueOf(pParameter);
 			final Class<? extends FormatConverter> convClass = parameter.getFormatConverterClass();
 			return setParameter(parameter, parameter.getIntegerValue(), convClass, pValue);
-		} catch (IllegalArgumentException iae) {
+		} catch (IllegalArgumentException _) {
 			throw new InvalidParameterException(pParameter, DomesicHotWaterParameter.class);
 		}
 	}
@@ -146,7 +147,7 @@ public class HeatPumpController {
 	 * parameters. synchronized as there is only one connection to the heatpump in
 	 * this version!
 	 */
-	private String setParameter(final Enum<?> pParameter, final Integer pEnumValue, final Class<? extends FormatConverter> pConverter, final String pValue) {
+	private String setParameter(final Enum<?> pParameter, final Integer pEnumValue, final @NonNull Class<? extends FormatConverter> pConverter, final String pValue) {
 		HttpStatus status = HttpStatus.OK;
 
 		log.debug("Parameter: " + pParameter.name());

@@ -13,15 +13,10 @@ plugins {
   id 'org.springframework.boot' version '3.5.14'
   id 'io.spring.dependency-management' version '1.1.7'
   id 'com.diffplug.spotless' version '6.20.0'
-	
-    //id 'com.palantir.docker' version '0.27.0'
-    
-    //id 'maven-publish'
-    
 }
 
 group = 'github.ijl'
-version = '0.0.2-SNAPSHOT'
+version = '0.0.3-SNAPSHOT'
 
 ext {
   lombokVersion = '1.18.46'
@@ -67,6 +62,7 @@ dependencies {
   annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation "org.testng:testng:7.10.2"
   testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
   testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -90,19 +86,3 @@ bootJar {
 test {
   useTestNG()
 }
-/*
-docker {
-	name = 'luxtonic-rest-server'
-	files tasks.bootJar.outputs
-	noCache true  
-}
-
-publishing {
-    publications {
-        dockerPublication(MavenPublication) {
-            from components.docker
-            artifactId project.name + "-docker"
-        }
-    }
-}
-*/
