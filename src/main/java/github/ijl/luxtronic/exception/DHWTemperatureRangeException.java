@@ -3,8 +3,9 @@ package github.ijl.luxtronic.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import github.ijl.luxtronic.config.ServiceProperties;
 import lombok.AllArgsConstructor;
+
+import github.ijl.luxtronic.config.ServiceProperties;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
 @AllArgsConstructor
@@ -17,7 +18,6 @@ public class DHWTemperatureRangeException extends RuntimeException {
 	 */
 	@Override
 	public String getMessage() {
-		return "Temperature '" + inputTemp + "' must be in the range [" + properties.getMinDHWTargetTemperature()
-				+ ", " + properties.getMaxDHWTargetTemperature() + "] C";
+		return "Temperature '" + inputTemp + "' must be in the range [" + properties.getMinDHWTargetTemperature() + ", " + properties.getMaxDHWTargetTemperature() + "] C";
 	}
 }

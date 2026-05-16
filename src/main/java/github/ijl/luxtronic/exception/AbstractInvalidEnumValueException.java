@@ -10,7 +10,7 @@ public abstract class AbstractInvalidEnumValueException extends RuntimeException
 
 	/**
 	 * Get the possible values from an Enum as a String.
-	 * 
+	 *
 	 * @return comma separated values.
 	 */
 	public String getEnumValues() {
