@@ -23,6 +23,7 @@ import github.ijl.luxtronic.config.v161.Calculations;
 import github.ijl.luxtronic.config.v161.EnumConstantsMap;
 import github.ijl.luxtronic.config.v161.Parameters;
 import github.ijl.luxtronic.exception.InvalidParameterException;
+import github.ijl.luxtronic.exception.ParameterRuntimeException;
 import github.ijl.luxtronic.format.FormatConverter;
 import github.ijl.luxtronic.format.OneToOneConverter;
 import github.ijl.luxtronic.param.DomesicHotWaterParameter;
@@ -166,7 +167,7 @@ public class HeatPumpController {
 			}
 		} catch (Exception e) {
 			log.error("setParameter: Exception Writing Parameter", e);
-			throw new RuntimeException(e);
+			throw new ParameterRuntimeException("setParameter: Exception Writing Parameter", e);
 		}
 		return status.toString();
 	}
@@ -192,8 +193,8 @@ public class HeatPumpController {
 				result = byteBufferToMap(output, pReadStatus);
 			}
 		} catch (final Exception e) {
-			log.error("Exception Writing Parameter", e);
-			throw new RuntimeException(e);
+			log.error("Exception Reading Parameter", e);
+			throw new ParameterRuntimeException("getParameter: Exception Reading Parameter", e);
 		}
 		return result;
 	}

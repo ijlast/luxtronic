@@ -39,6 +39,5 @@ public class EnumConstantsMapTest {
 	public void testHashMapForNonExistingInetegr() {
 		Map<Integer, TestEnum> testMap = EnumConstantsMap.buildFrom(TestEnum.class);
 		System.out.println(testMap.get(-2));
-		// Assert.assertNull(testMap.get(-1));
 	}
 }

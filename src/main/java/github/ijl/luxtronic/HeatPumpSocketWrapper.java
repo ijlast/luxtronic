@@ -29,12 +29,13 @@ import github.ijl.luxtronic.config.ServiceProperties;
 public final class HeatPumpSocketWrapper implements AutoCloseable {
 	public static final int BYTES_PER_INT = 4;
 
-	@Autowired
-	private ServiceProperties properties;
+	private final ServiceProperties properties;
 	private Socket socket;
 	private volatile int failCount = 0;
 
-	public HeatPumpSocketWrapper() {
+	@Autowired
+	public HeatPumpSocketWrapper(final ServiceProperties properties) {
+		this.properties = properties;
 	}
 
 	/**
@@ -166,7 +167,7 @@ public final class HeatPumpSocketWrapper implements AutoCloseable {
 			os.flush();
 			failCount = 0;
 			return writeBuffer;
-		} catch (final SocketException e) {
+		} catch (final SocketException _) {
 			if (failCount++ < 3) {
 				close();
 				return write(pCommand, pData);

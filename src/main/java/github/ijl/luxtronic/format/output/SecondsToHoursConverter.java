@@ -11,7 +11,7 @@ public class SecondsToHoursConverter implements FormatConverter {
 	 */
 	@Override
 	public String convertToHumanReadable(final Integer pValue) {
-		float fvalue = (float) pValue;
+		float fvalue = pValue;
 		return Float.toString(fvalue / 3600F);
 	}
 }

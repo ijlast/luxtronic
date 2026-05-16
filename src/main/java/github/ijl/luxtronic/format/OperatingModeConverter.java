@@ -31,7 +31,7 @@ public class OperatingModeConverter implements FormatConverter {
 			final OperatingMode mode = OperatingMode.valueOf(pValue);
 			value = mode.getIntegerValue();
 			log.debug("valid operating mode: " + pValue);
-		} catch (IllegalArgumentException iae) {
+		} catch (IllegalArgumentException _) {
 			log.error("invalid operating mode: " + pValue);
 			throw new InvalidOperatingModeException(pValue, OperatingMode.class);
 		}
