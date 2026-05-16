@@ -30,7 +30,7 @@ public class AbstractMapBasedConverter implements FormatConverter {
 	}
 
 	public Function<Integer, String> getFunction() {
-		return (input) -> {
+		return input -> {
 			if (humanReadableValues.containsKey(input)) {
 				return humanReadableValues.get(input);
 			} else {

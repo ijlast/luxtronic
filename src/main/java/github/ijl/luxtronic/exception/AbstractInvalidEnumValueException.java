@@ -17,7 +17,7 @@ public abstract class AbstractInvalidEnumValueException extends RuntimeException
 		final StringBuilder sb = new StringBuilder();
 		final Stream<?> valueStream = Stream.of(mEnum.getEnumConstants());
 		valueStream.forEachOrdered(x -> sb.append(x).append(','));
-		if (sb.length() > 0) {
+		if (!sb.isEmpty()) {
 			sb.setLength(sb.length() - 1);
 		}
 		return sb.toString();

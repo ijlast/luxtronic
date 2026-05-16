@@ -70,11 +70,12 @@ dependencies {
 
 spotless {
   java {
+    eclipse().configFile('.github/eclipse-formatter.xml')
     target 'src/**/*.java'
     // Import order: java, javax, org, lombok, github
     importOrder 'java','javax','jakarta','org','lombok','github'
     removeUnusedImports()
-    eclipse().configFile('.github/eclipse-formatter.xml')
+    endWithNewline()
   }
 }
 
