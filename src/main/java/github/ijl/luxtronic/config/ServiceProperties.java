@@ -13,12 +13,12 @@ import lombok.Setter;
 @Setter
 @NonNull
 public class ServiceProperties {
-	private String ip;
-	private String port;
+    private String ip;
+    private String port;
 
-	private Float minTemperatureDelta;
-	private Float maxTemperatureDelta;
+    private Float minTemperatureDelta;
+    private Float maxTemperatureDelta;
 
-	private Float minDHWTargetTemperature;
-	private Float maxDHWTargetTemperature;
+    private Float minDHWTargetTemperature;
+    private Float maxDHWTargetTemperature;
 }

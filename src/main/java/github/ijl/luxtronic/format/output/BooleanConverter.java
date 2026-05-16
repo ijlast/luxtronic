@@ -12,20 +12,20 @@ import github.ijl.luxtronic.format.FormatConverter;
 @Slf4j
 public class BooleanConverter implements FormatConverter {
 
-	/**
-	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
-	 */
-	@Override
-	public String convertToHumanReadable(final Integer pValue) {
-		return getFunction().apply(pValue);
-	}
+    /**
+     * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
+     */
+    @Override
+    public String convertToHumanReadable(final Integer pValue) {
+        return getFunction().apply(pValue);
+    }
 
-	public Function<Integer, String> getFunction() {
-		return input -> {
-			if (input > 1) {
-				log.warn("Converting value >1 to boolean \"false\"");
-			}
-			return Boolean.toString(input.equals(1));
-		};
-	}
+    public Function<Integer, String> getFunction() {
+        return input -> {
+            if (input > 1) {
+                log.warn("Converting value >1 to boolean \"false\"");
+            }
+            return Boolean.toString(input.equals(1));
+        };
+    }
 }

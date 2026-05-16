@@ -10,8 +10,8 @@ import github.ijl.luxtronic.format.input.TemperatureDeltaConverter;
 @AllArgsConstructor
 @Getter
 public enum HeatingParameter {
-	TemperatureDelta(1, TemperatureDeltaConverter.class),
-	Mode(3, OperatingModeConverter.class);
-	private final Integer integerValue;
-	private final Class<? extends FormatConverter> formatConverterClass;
+    TemperatureDelta(1, TemperatureDeltaConverter.class),
+    Mode(3, OperatingModeConverter.class);
+    private final Integer integerValue;
+    private final Class<? extends FormatConverter> formatConverterClass;
 }

@@ -12,9 +12,9 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class EnumConstantsMap {
 
-	public static <T extends EnumIndex> Map<Integer, T> buildFrom(Class<T> enumClass) {
-		Objects.requireNonNull(enumClass);
-		return Optional.ofNullable(enumClass.getEnumConstants()).map(Arrays::stream).orElseGet(Stream::empty)
-				.collect(Collectors.toMap(EnumIndex::getIntegerValue, enumItem -> enumItem));
-	}
+    public static <T extends EnumIndex> Map<Integer, T> buildFrom(Class<T> enumClass) {
+        Objects.requireNonNull(enumClass);
+        return Optional.ofNullable(enumClass.getEnumConstants()).map(Arrays::stream).orElseGet(Stream::empty)
+                .collect(Collectors.toMap(EnumIndex::getIntegerValue, enumItem -> enumItem));
+    }
 }

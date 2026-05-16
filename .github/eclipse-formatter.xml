@@ -6,6 +6,11 @@
     <setting id="org.eclipse.jdt.core.compiler.source" value="25"/>
     <setting id="org.eclipse.jdt.core.compiler.codegen.targetPlatform" value="25"/>
 
+    <!-- Indentation settings -->
+    <setting id="org.eclipse.jdt.core.formatter.indentation.size" value="4"/>
+    <setting id="org.eclipse.jdt.core.formatter.tabulation.char" value="space"/>
+    <setting id="org.eclipse.jdt.core.formatter.tabulation.size" value="4"/>
+
     <!-- Maximum line length -->
     <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="180"/>
     <!-- Import order: java, javax, org, lombok, github, then others -->
