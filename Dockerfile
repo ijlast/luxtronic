@@ -8,12 +8,13 @@ COPY gradlew gradlew.bat settings.gradle build.gradle ./
 COPY gradle ./gradle
 
 # Make wrapper executable (Linux)
-RUN chmod +x gradlew
+RUN chmod +x ./gradlew
 
 # Copy source
 COPY src ./src
 
 # Build the bootJar (layered by default in Spring Boot 3)
+RUN ls -al .
 RUN ./gradlew clean bootJar --no-daemon
 
 
