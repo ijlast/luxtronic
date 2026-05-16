@@ -75,6 +75,7 @@ spotless {
     // Import order: java, javax, org, lombok, github
     importOrder 'java','javax','jakarta','org','lombok','github'
     removeUnusedImports()
+    endWithNewline()
   }
 }
 
