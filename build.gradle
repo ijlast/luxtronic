@@ -76,6 +76,7 @@ spotless {
     importOrder 'java','javax','jakarta','org','lombok','github'
     removeUnusedImports()
     endWithNewline()
+    trimTrailingWhitespace()
   }
 }
 
