@@ -45,7 +45,8 @@ jobs:
             echo "release=true" >> $GITHUB_OUTPUT
           else
             SAFE_BRANCH=$(echo "${GITHUB_REF_NAME}" | tr '/' '-')
-            echo "tags=snapshot-${SAFE_BRANCH}-${SHORT_SHA}" >> $GITHUB_OUTPUT
+            SNAPSHOT_TAG="snapshot-${SAFE_BRANCH}-${SHORT_SHA}"
+            echo "docker_tags=${SNAPSHOT_TAG}" >> $GITHUB_OUTPUT
             echo "release_tag=${SNAPSHOT_TAG}" >> $GITHUB_OUTPUT
             echo "release=false" >> $GITHUB_OUTPUT
           fi
