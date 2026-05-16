@@ -15,7 +15,7 @@ COPY src ./src
 
 # Build the bootJar (layered by default in Spring Boot 3)
 RUN cat gradlew
-RUN sh ./gradlew clean bootJar --no-daemon
+RUN ./gradlew clean bootJar --no-daemon
 
 
 # === 2. Runtime stage ========================================================
