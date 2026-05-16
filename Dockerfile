@@ -1,23 +1,37 @@
+# === 1. Build stage ==========================================================
+FROM eclipse-temurin:25-jdk AS builder
 
-FROM adoptopenjdk/openjdk11:latest
+WORKDIR /workspace
 
-ARG JAR_FILE=build/libs/luxtronic-*.jar
+# Copy Gradle wrapper and build files
+COPY gradlew gradlew.bat settings.gradle build.gradle ./
+COPY gradle ./gradle
 
-#RUN addgroup -S spring && adduser -S spring -G spring
-#USER spring:spring
+# Make wrapper executable (Linux)
+RUN chmod +x gradlew
 
-COPY  ${JAR_FILE} /opt/luxtronic.jar
-WORKDIR /opt
+# Copy source
+COPY src ./src
 
-ENV HEATPUMP_IP 192.168.178.6
-ENV HEATPUMP_PORT 8888
+# Build the bootJar (layered by default in Spring Boot 3)
+RUN ./gradlew clean bootJar --no-daemon
+
+
+# === 2. Runtime stage ========================================================
+FROM eclipse-temurin:25-jre
+
+WORKDIR /app
+
+# Copy the built jar from the builder stage
+# Adjust the name if your jar is different
+COPY --from=builder /workspace/build/libs/luxtronic-*.jar app.jar
+
+# Environment variables for your heat pump
+ENV HEATPUMP_IP=192.168.178.6
+ENV HEATPUMP_PORT=8888
+
+# Expose the HTTP port
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "luxtronic.jar"]
-
-# 
-# Example usage:
-# docker build -t luxtonic_rest_service .
-# docker run -dit --restart=always --log-opt max-size=10m --log-opt max-file=5 -e HEATPUMP_IP=<your heatpump ip> -e HEATPUMP_PORT=8889 -p 9090:8080 luxtonic_rest_service:latest
-#
-# N.B. HEATPUMP_PORT defaults to 8888
+# Use the layered jar support (Spring Boot recommendation)
+ENTRYPOINT ["java", "-jar", "app.jar"]
