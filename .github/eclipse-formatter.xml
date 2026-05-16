@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <profiles version="12">
   <profile kind="CodeFormatterProfile" name="Luxtronic" version="12">
+    <!-- Java version compliance settings -->
+    <setting id="org.eclipse.jdt.core.compiler.compliance" value="25"/>
+    <setting id="org.eclipse.jdt.core.compiler.source" value="25"/>
+    <setting id="org.eclipse.jdt.core.compiler.codegen.targetPlatform" value="25"/>
+
     <!-- Maximum line length -->
     <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="180"/>
     <!-- Import order: java, javax, org, lombok, github, then others -->

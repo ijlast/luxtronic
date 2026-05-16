@@ -23,7 +23,6 @@ import github.ijl.luxtronic.format.output.TimestampConverter;
 @Getter
 public enum Calculations implements EnumIndex {
 
-
 	ID_WEB_TEMPERATUR_TVL(10, "Flow temperature heating circuit.", TemperatureConverter.class),
 	ID_WEB_TEMPERATUR_TRL(11, "Return temperature heating circuit.", TemperatureConverter.class),
 	ID_WEB_SOLLWERT_TRL_HZ(12, "Return setpoint heating circuit.", TemperatureConverter.class),
