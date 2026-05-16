@@ -11,30 +11,30 @@ import github.ijl.luxtronic.param.OperatingMode;
 @Slf4j
 public class OperatingModeConverter implements FormatConverter {
 
-	/**
-	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
-	 */
-	@Override
-	public String convertToHumanReadable(final Integer pValue) {
-		final OperatingMode opmode = OperatingMode.getOperatingMode(pValue);
-		return (opmode != null ? opmode.toString() : "Unknown");
-	}
+    /**
+     * @see github.ijl.luxtronic.format.FormatConverter#convertToHumanReadable(java.lang.Integer)
+     */
+    @Override
+    public String convertToHumanReadable(final Integer pValue) {
+        final OperatingMode opmode = OperatingMode.getOperatingMode(pValue);
+        return (opmode != null ? opmode.toString() : "Unknown");
+    }
 
-	/**
-	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHeatPumpFormat(java.lang.String)
-	 */
-	@Override
-	public Integer convertToHeatPumpFormat(final String pValue) {
-		log.debug("looking for operating mode: " + pValue);
-		Integer value;
-		try {
-			final OperatingMode mode = OperatingMode.valueOf(pValue);
-			value = mode.getIntegerValue();
-			log.debug("valid operating mode: " + pValue);
-		} catch (IllegalArgumentException _) {
-			log.error("invalid operating mode: " + pValue);
-			throw new InvalidOperatingModeException(pValue, OperatingMode.class);
-		}
-		return value;
-	}
+    /**
+     * @see github.ijl.luxtronic.format.FormatConverter#convertToHeatPumpFormat(java.lang.String)
+     */
+    @Override
+    public Integer convertToHeatPumpFormat(final String pValue) {
+        log.debug("looking for operating mode: " + pValue);
+        Integer value;
+        try {
+            final OperatingMode mode = OperatingMode.valueOf(pValue);
+            value = mode.getIntegerValue();
+            log.debug("valid operating mode: " + pValue);
+        } catch (IllegalArgumentException _) {
+            log.error("invalid operating mode: " + pValue);
+            throw new InvalidOperatingModeException(pValue, OperatingMode.class);
+        }
+        return value;
+    }
 }

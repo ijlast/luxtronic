@@ -10,9 +10,9 @@ import github.ijl.luxtronic.format.input.DHWTargetTemperatureConverter;
 @AllArgsConstructor
 @Getter
 public enum DomesicHotWaterParameter {
-	TargetTemperature(2, DHWTargetTemperatureConverter.class),
-	Mode(4, OperatingModeConverter.class);
+    TargetTemperature(2, DHWTargetTemperatureConverter.class),
+    Mode(4, OperatingModeConverter.class);
 
-	private final Integer integerValue;
-	private final Class<? extends FormatConverter> formatConverterClass;
+    private final Integer integerValue;
+    private final Class<? extends FormatConverter> formatConverterClass;
 }

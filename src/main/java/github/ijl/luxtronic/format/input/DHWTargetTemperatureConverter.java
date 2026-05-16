@@ -9,23 +9,23 @@ import github.ijl.luxtronic.format.FormatConverter;
 
 @Service
 public class DHWTargetTemperatureConverter implements FormatConverter {
-	@Autowired
-	private ServiceProperties properties;
+    @Autowired
+    private ServiceProperties properties;
 
-	/**
-	 * @see github.ijl.luxtronic.format.FormatConverter#convertToHeatPumpFormat(java.lang.String)
-	 */
-	@Override
-	public Integer convertToHeatPumpFormat(final String pValue) {
-		float value;
-		try {
-			value = Float.parseFloat(pValue);
-		} catch (NumberFormatException e) {
-			throw new DHWTemperatureRangeException(pValue, properties);
-		}
-		if (value < properties.getMinDHWTargetTemperature() || value > properties.getMaxDHWTargetTemperature()) {
-			throw new DHWTemperatureRangeException(pValue, properties);
-		}
-		return (int) (10 * value);
-	}
+    /**
+     * @see github.ijl.luxtronic.format.FormatConverter#convertToHeatPumpFormat(java.lang.String)
+     */
+    @Override
+    public Integer convertToHeatPumpFormat(final String pValue) {
+        float value;
+        try {
+            value = Float.parseFloat(pValue);
+        } catch (NumberFormatException e) {
+            throw new DHWTemperatureRangeException(pValue, properties);
+        }
+        if (value < properties.getMinDHWTargetTemperature() || value > properties.getMaxDHWTargetTemperature()) {
+            throw new DHWTemperatureRangeException(pValue, properties);
+        }
+        return (int) (10 * value);
+    }
 }
