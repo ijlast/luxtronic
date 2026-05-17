@@ -62,7 +62,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.release_tag  }}
+            ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.docker_tags }}
 
       # ---------------------------------------------------------
       # Create GitHub Release ONLY for master
@@ -71,6 +71,6 @@ jobs:
         if: steps.vars.outputs.release == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.vars.outputs.tags }}
-          name: "Luxtronic Release ${{ steps.vars.outputs.tags }}"
+          tag_name: ${{ steps.vars.outputs.release_tag }}
+          name: "Luxtronic Release ${{ steps.vars.outputs.release_tag }}"
           generate_release_notes: true
