@@ -40,15 +40,24 @@ jobs:
           DATE_TAG=$(date +"v%Y.%m.%d-%H%M")
 
           if [ "${GITHUB_REF_NAME}" = "master" ]; then
-            echo "docker_tags=latest,${DATE_TAG},sha-${SHORT_SHA}" >> $GITHUB_OUTPUT
-            echo "release_tag=${DATE_TAG}" >> $GITHUB_OUTPUT
             echo "release=true" >> $GITHUB_OUTPUT
+            echo "release_tag=${DATE_TAG}" >> $GITHUB_OUTPUT
+
+            echo "docker_tags<<EOF" >> $GITHUB_OUTPUT
+            echo "ghcr.io/${GITHUB_REPOSITORY}:latest" >> $GITHUB_OUTPUT
+            echo "ghcr.io/${GITHUB_REPOSITORY}:${DATE_TAG}" >> $GITHUB_OUTPUT
+            echo "ghcr.io/${GITHUB_REPOSITORY}:sha-${SHORT_SHA}" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
           else
             SAFE_BRANCH=$(echo "${GITHUB_REF_NAME}" | tr '/' '-')
             SNAPSHOT_TAG="snapshot-${SAFE_BRANCH}-${SHORT_SHA}"
-            echo "docker_tags=${SNAPSHOT_TAG}" >> $GITHUB_OUTPUT
-            echo "release_tag=${SNAPSHOT_TAG}" >> $GITHUB_OUTPUT
+
             echo "release=false" >> $GITHUB_OUTPUT
+            echo "release_tag=${SNAPSHOT_TAG}" >> $GITHUB_OUTPUT
+
+            echo "docker_tags<<EOF" >> $GITHUB_OUTPUT
+            echo "ghcr.io/${GITHUB_REPOSITORY}:${SNAPSHOT_TAG}" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
           fi
 
       # ---------------------------------------------------------
@@ -61,8 +70,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.docker_tags }}
+          tags: ${{ steps.vars.outputs.docker_tags }}
 
       # ---------------------------------------------------------
       # Create GitHub Release ONLY for master
