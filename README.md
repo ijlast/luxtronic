@@ -82,9 +82,11 @@ to values appropriate for the heat pump.
 
 The optional `haos` Spring profile publishes MQTT sensor discovery and
 temperature states. This integration is still under development. It is
-intended to expose the heat pump's temperature measurements on a Home
-Assistant dashboard; the sensor list is derived from all calculations mapped
-with the temperature converter. Home Assistant is not called directly: both
+intended to expose selected heat-pump measurements on a Home Assistant
+dashboard. The initial sensor set is heating-circuit flow and return
+temperatures, outside temperature, hot-water actual temperature, and hot-water
+set temperature. Other mapped temperature calculations are not published
+unless added to the sensor list. Home Assistant is not called directly: both
 systems must be able to connect to the same MQTT broker, such as the Mosquitto
 add-on configured in Home Assistant.
 
@@ -100,16 +102,19 @@ Set `SPRING_PROFILES_ACTIVE=haos` and configure the broker:
 | `MQTT_CLIENT_ID` | MQTT client identifier | Generated at startup |
 | `LUXTRONIC_POLL_INTERVAL_MS` | Poll interval in milliseconds | `300000` (5 minutes) |
 
-The integration discovers calculation entries currently mapped with the
-temperature converter, including heating flow and return, outdoor, and hot
-water temperatures. It publishes the converted Celsius values under
-`luxtronic/sensor/<calculation-name>/state`. Discovery configuration is
-retained; state messages are not retained and are refreshed on each poll.
-Discovered sensors expire after 10 minutes without an update. Home Assistant
-history and long-term statistics also depend on its Recorder settings.
+The integration discovers the five selected temperature sensors and publishes
+their converted Celsius values under
+`luxtronic/sensor/<calculation-name>/state`. State is refreshed every five
+minutes by default; the interval is configurable. Discovery configuration is
+retained, while state messages are not retained. Discovered sensors expire
+after 10 minutes without an update. Home Assistant history and long-term
+statistics also depend on its Recorder settings.
 
 Without the `haos` profile, the application does not create an MQTT connection;
 the REST API remains available.
+
+To run the bridge as a Home Assistant OS app on a Raspberry Pi 4, follow the
+[HAOS app installation guide](haos/luxtronic/README.md).
 
 ## Running
 

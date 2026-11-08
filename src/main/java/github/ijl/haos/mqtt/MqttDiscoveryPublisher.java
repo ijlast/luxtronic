@@ -50,9 +50,9 @@ public class MqttDiscoveryPublisher {
                   "state_class": "measurement",
                   "exp_aft": 600,
                   "dev": {
-                    "ids": ["luxtronic_heat_pump"],
-                    "name": "Luxtronic Heat Pump",
-                    "mf": "Luxtronic",
+                    "ids": ["luxtronik_heat_pump"],
+                    "name": "Luxtronik Heat Pump",
+                    "mf": "Luxtronik",
                     "mdl": "v161"
                   }
                 }

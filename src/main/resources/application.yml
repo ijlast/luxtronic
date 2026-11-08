@@ -10,3 +10,6 @@ heatpump:
 logging:
   level:
     github: INFO
+    github.ijl.haos.service.PollingService: INFO
+    github.ijl.haos.mqtt.MqttStatePublisher: INFO
+    github.ijl.haos.mqtt.MqttPublisher: INFO

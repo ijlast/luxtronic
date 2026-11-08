@@ -1,5 +1,6 @@
 package github.ijl.haos.mqtt;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.IMqttClient;
@@ -20,7 +21,7 @@ public class MqttConfig {
     public IMqttClient mqttClient() throws Exception {
         String host = env("MQTT_HOST", "localhost");
         int port = envInt("MQTT_PORT", 1883);
-        String clientId = env("MQTT_CLIENT_ID", "luxtronic-" + UUID.randomUUID());
+        String clientId = env("MQTT_CLIENT_ID", "luxtronik-" + UUID.randomUUID());
 
         String uri = "tcp://" + host + ":" + port;
         log.info("Connecting to MQTT broker at {}", uri);
@@ -70,8 +71,8 @@ public class MqttConfig {
         }
     }
 
-    private java.util.Optional<String> envOpt(String key) {
+    private Optional<String> envOpt(String key) {
         String value = System.getenv(key);
-        return (value == null || value.isBlank()) ? java.util.Optional.empty() : java.util.Optional.of(value);
+        return (value == null || value.isBlank()) ? Optional.empty() : Optional.of(value);
     }
 }
