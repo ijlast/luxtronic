@@ -1,0 +1,40 @@
+configuration:
+  SPRING_PROFILES_ACTIVE:
+    name: "Spring profile"
+    description: "Keep this set to haos to enable Home Assistant MQTT publishing."
+  HEATPUMP_IP:
+    name: "Heat-pump IP address"
+    description: "IP address of the Luxtronic controller on your local network."
+  HEATPUMP_PORT:
+    name: "Heat-pump TCP port"
+    description: "Luxtronic protocol port, commonly 8888 or 8889."
+  HEATPUMP_MIN_DHW_TARGET_TEMPERATURE:
+    name: "Minimum hot-water target temperature"
+    description: "Lowest hot-water target the REST API accepts, in degrees Celsius."
+  HEATPUMP_MAX_DHW_TARGET_TEMPERATURE:
+    name: "Maximum hot-water target temperature"
+    description: "Highest hot-water target the REST API accepts, in degrees Celsius."
+  HEATPUMP_MIN_TEMPERATURE_DELTA:
+    name: "Minimum heating temperature delta"
+    description: "Lowest heating delta the REST API accepts, in degrees Celsius."
+  HEATPUMP_MAX_TEMPERATURE_DELTA:
+    name: "Maximum heating temperature delta"
+    description: "Highest heating delta the REST API accepts, in degrees Celsius."
+  MQTT_HOST:
+    name: "MQTT broker host"
+    description: "Use core-mosquitto for the official Mosquitto broker app."
+  MQTT_PORT:
+    name: "MQTT broker port"
+    description: "Broker TCP port, normally 1883."
+  MQTT_USERNAME:
+    name: "MQTT username"
+    description: "Dedicated Home Assistant user permitted to connect to Mosquitto."
+  MQTT_PASSWORD:
+    name: "MQTT password"
+    description: "Password for the MQTT user."
+  MQTT_BASE_TOPIC:
+    name: "Discovery topic prefix"
+    description: "Home Assistant MQTT discovery prefix; normally homeassistant."
+  LUXTRONIC_POLL_INTERVAL_MS:
+    name: "Polling interval (milliseconds)"
+    description: "How often the bridge reads the heat pump and publishes sensor state."

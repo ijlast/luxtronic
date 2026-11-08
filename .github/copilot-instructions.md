@@ -30,7 +30,8 @@ Notes about linting
 High-level architecture
 
 - Purpose: Spring Boot REST service acting as a virtual Fibaro HC2 device to control a Luxtronic II (v1.6.1) heatpump.
-- Main entry point: github.ijl.luxtronic.Application (Spring Boot @SpringBootApplication).
+- Main entry point: github.ijl.Application (Spring Boot @SpringBootApplication).
+- Heat-pump service package: github.ijl.luxtronik2.
 - Core components:
   - HeatPumpController: REST endpoints that present virtual device behaviour expected by Fibaro HC2.
   - HeatPumpSocketWrapper: low-level TCP socket communication with the physical heatpump (protocol framing, request/response management).

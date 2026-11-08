@@ -1,0 +1,45 @@
+name: "Luxtronic Bridge"
+version: "0.1.0"
+slug: "luxtronic_bridge"
+description: "Connect a Luxtronic II heat pump to Home Assistant over MQTT."
+url: "https://github.com/ijlast/luxtronic"
+arch:
+  - aarch64
+  - amd64
+stage: experimental
+image: "ghcr.io/ijlast/luxtronic"
+legacy: true
+startup: application
+boot: auto
+ports:
+  8080/tcp: null
+ports_description:
+  8080/tcp: "Optional REST API and Swagger UI"
+webui: "http://[HOST]:[PORT:8080]"
+options:
+  SPRING_PROFILES_ACTIVE: "haos"
+  HEATPUMP_IP: "192.168.178.6"
+  HEATPUMP_PORT: "8888"
+  HEATPUMP_MIN_DHW_TARGET_TEMPERATURE: 30
+  HEATPUMP_MAX_DHW_TARGET_TEMPERATURE: 50
+  HEATPUMP_MIN_TEMPERATURE_DELTA: -5
+  HEATPUMP_MAX_TEMPERATURE_DELTA: 5
+  MQTT_HOST: "localhost"
+  MQTT_PORT: 1883
+  MQTT_USERNAME: "luxtronic_bridge"
+  MQTT_BASE_TOPIC: "homeassistant"
+  LUXTRONIC_POLL_INTERVAL_MS: 300000
+schema:
+  SPRING_PROFILES_ACTIVE: "str"
+  HEATPUMP_IP: "str"
+  HEATPUMP_PORT: "port"
+  HEATPUMP_MIN_DHW_TARGET_TEMPERATURE: "float"
+  HEATPUMP_MAX_DHW_TARGET_TEMPERATURE: "float"
+  HEATPUMP_MIN_TEMPERATURE_DELTA: "float"
+  HEATPUMP_MAX_TEMPERATURE_DELTA: "float"
+  MQTT_HOST: "str"
+  MQTT_PORT: "port"
+  MQTT_USERNAME: "str"
+  MQTT_PASSWORD: "password"
+  MQTT_BASE_TOPIC: "str"
+  LUXTRONIC_POLL_INTERVAL_MS: "int(1000,)"

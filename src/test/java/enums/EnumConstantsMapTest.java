@@ -5,8 +5,8 @@ import java.util.Map;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import github.ijl.luxtronic.config.v161.EnumConstantsMap;
-import github.ijl.luxtronic.config.v161.EnumIndex;
+import github.ijl.luxtronik2.config.v161.EnumConstantsMap;
+import github.ijl.luxtronik2.config.v161.EnumIndex;
 
 public class EnumConstantsMapTest {
     @Test(expectedExceptions = NullPointerException.class)
